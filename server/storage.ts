@@ -23,6 +23,8 @@ export interface IStorage {
 
   getFinancialSchedule(familyId: number): Promise<(typeof financialSchedule.$inferSelect)[]>;
   createFinancialSchedule(item: any): Promise<typeof financialSchedule.$inferSelect>;
+  updateFinancialSchedule(id: number, familyId: number, data: Partial<typeof financialSchedule.$inferSelect>): Promise<typeof financialSchedule.$inferSelect>;
+  deleteFinancialSchedule(id: number, familyId: number): Promise<void>;
 
   getSavingsGoals(familyId: number): Promise<(typeof savingsGoals.$inferSelect)[]>;
   createSavingsGoal(goal: any): Promise<typeof savingsGoals.$inferSelect>;
@@ -136,6 +138,15 @@ export class DatabaseStorage implements IStorage {
   async createFinancialSchedule(item: any) {
     const [newItem] = await db.insert(financialSchedule).values(item).returning();
     return newItem;
+  }
+
+  async updateFinancialSchedule(id: number, familyId: number, data: Partial<typeof financialSchedule.$inferSelect>) {
+    const [updated] = await db.update(financialSchedule).set(data).where(and(eq(financialSchedule.id, id), eq(financialSchedule.familyId, familyId))).returning();
+    return updated;
+  }
+
+  async deleteFinancialSchedule(id: number, familyId: number) {
+    await db.delete(financialSchedule).where(and(eq(financialSchedule.id, id), eq(financialSchedule.familyId, familyId)));
   }
 
   async getSavingsGoals(familyId: number) {

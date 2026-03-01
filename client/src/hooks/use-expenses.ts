@@ -41,8 +41,34 @@ export function useFinancialSchedule() {
 export function useCreateFinancialSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { title: string; amount: string | number; type: string; frequency?: string; dueDate: string; isPayday?: boolean }) => {
+    mutationFn: async (data: { title: string; amount: string | number; type: string; frequency?: string; dueDate: string; isPayday?: boolean; billType?: string; category?: string; notes?: string; autoPay?: boolean; reminderDays?: number }) => {
       const res = await apiRequest("POST", api.financialSchedule.create.path, data);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.financialSchedule.list.path] });
+    },
+  });
+}
+
+export function useUpdateFinancialSchedule() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...data }: { id: number; [key: string]: any }) => {
+      const res = await apiRequest("PATCH", `/api/financial-schedule/${id}`, data);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.financialSchedule.list.path] });
+    },
+  });
+}
+
+export function useDeleteFinancialSchedule() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/financial-schedule/${id}`);
       return await res.json();
     },
     onSuccess: () => {

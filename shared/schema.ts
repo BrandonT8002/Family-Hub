@@ -60,12 +60,19 @@ export const expenses = pgTable("expenses", {
 export const financialSchedule = pgTable("financial_schedule", {
   id: serial("id").primaryKey(),
   familyId: integer("family_id").references(() => families.id).notNull(),
+  creatorId: text("creator_id").references(() => users.id),
   title: text("title").notNull(),
   amount: numeric("amount").notNull(),
   type: text("type").notNull(),
   frequency: text("frequency"),
   dueDate: timestamp("due_date").notNull(),
   isPayday: boolean("is_payday").default(false),
+  billType: text("bill_type"),
+  category: text("category"),
+  notes: text("notes"),
+  isPaid: boolean("is_paid").default(false),
+  autoPay: boolean("auto_pay").default(false),
+  reminderDays: integer("reminder_days").default(3),
 });
 
 export const savingsGoals = pgTable("savings_goals", {
@@ -194,6 +201,10 @@ export type Conversation = typeof conversations.$inferSelect;
 export const insertBlockSchema = createInsertSchema(blocks).omit({ id: true, createdAt: true });
 export type InsertBlock = z.infer<typeof insertBlockSchema>;
 export type Block = typeof blocks.$inferSelect;
+
+export const insertFinancialScheduleSchema = createInsertSchema(financialSchedule).omit({ id: true });
+export type InsertFinancialSchedule = z.infer<typeof insertFinancialScheduleSchema>;
+export type FinancialSchedule = typeof financialSchedule.$inferSelect;
 
 export const insertDiaryEntrySchema = createInsertSchema(diaryEntries).omit({ id: true, createdAt: true, updatedAt: true, isDeleted: true, deletedAt: true });
 export type InsertDiaryEntry = z.infer<typeof insertDiaryEntrySchema>;

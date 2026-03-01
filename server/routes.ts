@@ -184,11 +184,16 @@ export async function registerRoutes(
   app.post(api.financialSchedule.create.path, isAuthenticated, requireFamily, async (req: any, res) => {
     try {
       const input = api.financialSchedule.create.input.parse(req.body);
+      const parsedDate = new Date(input.dueDate);
+      if (isNaN(parsedDate.getTime())) {
+        return res.status(400).json({ message: "Invalid due date" });
+      }
       const item = await storage.createFinancialSchedule({
         ...input,
         amount: input.amount.toString(),
-        dueDate: new Date(input.dueDate),
+        dueDate: parsedDate,
         familyId: req.family.id,
+        creatorId: req.user.claims.sub,
       });
       res.status(201).json(item);
     } catch (err) {
@@ -196,6 +201,63 @@ export async function registerRoutes(
         return res.status(400).json({ message: err.errors[0].message });
       }
       throw err;
+    }
+  });
+
+  const updateFinancialScheduleSchema = z.object({
+    title: z.string().optional(),
+    amount: z.number().or(z.string()).optional(),
+    type: z.string().optional(),
+    frequency: z.string().optional(),
+    dueDate: z.string().optional(),
+    isPayday: z.boolean().optional(),
+    billType: z.string().optional(),
+    category: z.string().optional(),
+    notes: z.string().optional(),
+    isPaid: z.boolean().optional(),
+    autoPay: z.boolean().optional(),
+    reminderDays: z.number().optional(),
+  });
+
+  app.patch('/api/financial-schedule/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const input = updateFinancialScheduleSchema.parse(req.body);
+      
+      const updates: any = {};
+      if (input.title !== undefined) updates.title = input.title;
+      if (input.amount !== undefined) updates.amount = input.amount.toString();
+      if (input.type !== undefined) updates.type = input.type;
+      if (input.frequency !== undefined) updates.frequency = input.frequency;
+      if (input.dueDate !== undefined) {
+        const parsedDate = new Date(input.dueDate);
+        if (isNaN(parsedDate.getTime())) return res.status(400).json({ message: "Invalid due date" });
+        updates.dueDate = parsedDate;
+      }
+      if (input.isPayday !== undefined) updates.isPayday = input.isPayday;
+      if (input.billType !== undefined) updates.billType = input.billType;
+      if (input.category !== undefined) updates.category = input.category;
+      if (input.notes !== undefined) updates.notes = input.notes;
+      if (input.isPaid !== undefined) updates.isPaid = input.isPaid;
+      if (input.autoPay !== undefined) updates.autoPay = input.autoPay;
+      if (input.reminderDays !== undefined) updates.reminderDays = input.reminderDays;
+      
+      const updated = await storage.updateFinancialSchedule(id, req.family.id, updates);
+      if (!updated) return res.status(404).json({ message: "Item not found" });
+      res.json(updated);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: "Failed to update item" });
+    }
+  });
+
+  app.delete('/api/financial-schedule/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      await storage.deleteFinancialSchedule(id, req.family.id);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to delete item" });
     }
   });
 

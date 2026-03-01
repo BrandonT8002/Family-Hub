@@ -1,16 +1,47 @@
 import { useState } from "react";
 import { useEvents, useCreateEvent } from "@/hooks/use-events";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
+import { useFinancialSchedule } from "@/hooks/use-expenses";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, addYears } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CalendarPlus, MapPin, Clock, ChevronLeft, ChevronRight, Lock, Users, Info } from "lucide-react";
+import { CalendarPlus, MapPin, Clock, ChevronLeft, ChevronRight, Lock, Users, Info, DollarSign, CreditCard } from "lucide-react";
+
+function getBillDatesInRange(bill: any, rangeStart: Date, rangeEnd: Date): Date[] {
+  const dates: Date[] = [];
+  let current = new Date(bill.dueDate);
+  if (isNaN(current.getTime())) return dates;
+  if (!bill.frequency || bill.frequency === "One-time") {
+    if (current >= rangeStart && current <= rangeEnd) dates.push(current);
+    return dates;
+  }
+  let safety = 0;
+  while (current <= rangeEnd && safety < 500) {
+    if (current >= rangeStart) {
+      dates.push(new Date(current));
+    }
+    const prev = current.getTime();
+    switch (bill.frequency) {
+      case "Weekly": current = addWeeks(current, 1); break;
+      case "Bi-weekly": current = addWeeks(current, 2); break;
+      case "Monthly": current = addMonths(current, 1); break;
+      case "Quarterly": current = addMonths(current, 3); break;
+      case "Yearly": current = addYears(current, 1); break;
+      default: current = addMonths(current, 1);
+    }
+    if (current.getTime() === prev) break;
+    safety++;
+  }
+  return dates;
+}
 
 export default function Schedule() {
   const { data: events, isLoading } = useEvents();
+  const { data: bills } = useFinancialSchedule();
   const createEvent = useCreateEvent();
   const [isOpen, setIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -59,6 +90,15 @@ export default function Schedule() {
 
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
   const dayEvents = (events || []).filter(e => isSameDay(new Date(e.date), selectedDate));
+
+  const billsData = bills || [];
+  const billOccurrencesForDay = (day: Date) => {
+    return billsData.flatMap(bill => {
+      const dates = getBillDatesInRange(bill, new Date(day.getFullYear(), day.getMonth(), day.getDate()), new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59));
+      return dates.length > 0 ? [bill] : [];
+    });
+  };
+  const dayBills = billOccurrencesForDay(selectedDate);
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-20">
@@ -158,7 +198,8 @@ export default function Schedule() {
               <div key={d} className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 pb-4">{d}</div>
             ))}
             {calendarDays.map((day, i) => {
-              const dayEvents = (events || []).filter(e => isSameDay(new Date(e.date), day));
+              const dayEvts = (events || []).filter(e => isSameDay(new Date(e.date), day));
+              const dayBls = billOccurrencesForDay(day);
               const isSelected = isSameDay(day, selectedDate);
               const isToday = isSameDay(day, new Date());
               const isCurrentMonth = isSameMonth(day, monthStart);
@@ -172,13 +213,17 @@ export default function Schedule() {
                     ${isSelected ? 'border-primary bg-primary/5 shadow-inner' : 'border-slate-50 hover:border-primary/20 bg-white/50'}
                     ${!isCurrentMonth && 'opacity-30'}
                   `}
+                  data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
                 >
                   <span className={`text-sm font-black ${isToday ? 'bg-primary text-white w-7 h-7 flex items-center justify-center rounded-full -mt-1 -ml-1' : 'text-slate-900'}`}>
                     {format(day, 'd')}
                   </span>
                   <div className="mt-auto flex flex-wrap gap-1">
-                    {dayEvents.slice(0, 3).map(e => (
+                    {dayEvts.slice(0, 3).map(e => (
                       <div key={e.id} className={`w-1.5 h-1.5 rounded-full ${e.isPersonal ? 'bg-amber-400' : 'bg-primary'}`} />
+                    ))}
+                    {dayBls.filter(b => !b.isPaid).slice(0, 2).map(b => (
+                      <div key={`bill-${b.id}`} className={`w-1.5 h-1.5 rounded-full ${b.isPayday ? 'bg-emerald-400' : 'bg-rose-400'}`} />
                     ))}
                   </div>
                 </button>
@@ -192,37 +237,59 @@ export default function Schedule() {
             <h3 className="text-xl font-display font-black text-slate-900">{format(selectedDate, 'MMM d, yyyy')}</h3>
           </div>
           <div className="space-y-4">
-            {dayEvents.length === 0 ? (
+            {dayEvents.length === 0 && dayBills.length === 0 ? (
               <Card className="rounded-3xl border-2 border-dashed border-slate-200 bg-white/40 p-10 text-center">
-                <p className="text-slate-400 font-bold italic">No events scheduled.</p>
+                <p className="text-slate-400 font-bold italic">Nothing scheduled.</p>
               </Card>
             ) : (
-              dayEvents.map(event => (
-                <Card key={event.id} className="rounded-3xl border-white/80 shadow-lg bg-white/95 p-5 transition-all hover:scale-[1.02]">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-2.5 rounded-2xl ${event.isPersonal ? 'bg-amber-100 text-amber-600' : 'bg-primary/10 text-primary'}`}>
-                      {event.isPersonal ? <Lock className="w-5 h-5" /> : <Users className="w-5 h-5" />}
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-slate-900">{format(new Date(event.date), 'h:mm a')}</p>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{event.recurrence}</p>
-                    </div>
-                  </div>
-                  <h4 className="font-black text-xl text-slate-900 mb-2">{event.title}</h4>
-                  <div className="space-y-2">
-                    {event.location && (
-                      <div className="flex items-center gap-2 text-sm text-slate-500 font-bold">
-                        <MapPin className="w-4 h-4" /> {event.location}
+              <>
+                {dayEvents.map(event => (
+                  <Card key={event.id} className="rounded-3xl border-white/80 shadow-lg bg-white/95 p-5 transition-all hover:scale-[1.02]" data-testid={`card-event-${event.id}`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-2.5 rounded-2xl ${event.isPersonal ? 'bg-amber-100 text-amber-600' : 'bg-primary/10 text-primary'}`}>
+                        {event.isPersonal ? <Lock className="w-5 h-5" /> : <Users className="w-5 h-5" />}
                       </div>
-                    )}
-                    {event.notes && (
-                      <div className="flex items-start gap-2 text-sm text-slate-500 font-medium bg-slate-50 p-3 rounded-2xl border-2 border-white">
-                        <Info className="w-4 h-4 mt-0.5 text-primary" /> {event.notes}
+                      <div className="text-right">
+                        <p className="text-sm font-black text-slate-900">{format(new Date(event.date), 'h:mm a')}</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{event.recurrence}</p>
                       </div>
-                    )}
-                  </div>
-                </Card>
-              ))
+                    </div>
+                    <h4 className="font-black text-xl text-slate-900 mb-2">{event.title}</h4>
+                    <div className="space-y-2">
+                      {event.location && (
+                        <div className="flex items-center gap-2 text-sm text-slate-500 font-bold">
+                          <MapPin className="w-4 h-4" /> {event.location}
+                        </div>
+                      )}
+                      {event.notes && (
+                        <div className="flex items-start gap-2 text-sm text-slate-500 font-medium bg-slate-50 p-3 rounded-2xl border-2 border-white">
+                          <Info className="w-4 h-4 mt-0.5 text-primary" /> {event.notes}
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+                {dayBills.map(bill => (
+                  <Card key={`bill-${bill.id}`} className={`rounded-3xl shadow-lg p-5 transition-all hover:scale-[1.02] ${bill.isPayday ? 'border-emerald-200 bg-emerald-50/80' : 'border-rose-200 bg-rose-50/80'}`} data-testid={`card-schedule-bill-${bill.id}`}>
+                    <div className="flex items-start justify-between mb-3">
+                      <div className={`p-2.5 rounded-2xl ${bill.isPayday ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
+                        {bill.isPayday ? <DollarSign className="w-5 h-5" /> : <CreditCard className="w-5 h-5" />}
+                      </div>
+                      <Badge variant="outline" className={`rounded-lg text-[10px] font-bold ${bill.isPayday ? 'border-emerald-200 text-emerald-700' : 'border-rose-200 text-rose-700'}`}>
+                        {bill.isPayday ? "INCOME" : "BILL DUE"}
+                      </Badge>
+                    </div>
+                    <h4 className="font-black text-xl text-slate-900 mb-1">{bill.title}</h4>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className={`font-display font-bold text-lg ${bill.isPayday ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        {bill.isPayday ? '+' : '-'}${Number(bill.amount).toFixed(2)}
+                      </span>
+                      <span className="text-slate-400 text-xs font-medium">{bill.frequency}</span>
+                      {bill.category && <span className="text-slate-400 text-xs">| {bill.category}</span>}
+                    </div>
+                  </Card>
+                ))}
+              </>
             )}
           </div>
         </div>

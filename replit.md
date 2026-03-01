@@ -32,7 +32,7 @@ server/
 - **family_members** - Join table (userId, familyId, role, displayName, dateOfBirth)
 - **events** - Calendar events (personal/shared, recurring)
 - **expenses** - Money tracking
-- **financial_schedule** - Bills/paydays
+- **financial_schedule** - Bills/paydays (creatorId, billType, category, notes, isPaid, autoPay, reminderDays)
 - **savings_goals** - Family savings
 - **grocery_lists** - Shopping lists (with creatorId, isPrivate for sharing control)
 - **grocery_items** - Items in lists
@@ -46,7 +46,7 @@ server/
 ## Features
 - **Dashboard**: Overview of events, expenses, savings
 - **Schedule**: Calendar with recurring events, personal/shared
-- **Money**: Expenses, financial schedule, savings goals
+- **Money**: Bill-centric management with bill types (housing, utility, subscription, insurance, transportation, education, internet, shopping), recurring/one-time tracking, due date mapping with overdue/due-soon alerts, annual cost projections per bill and by type, paid/unpaid toggle, auto-pay flag, edit/delete bills, expense logging, savings goals; bills appear on Schedule calendar
 - **Groceries**: Shopping lists with Wants/Needs categorization, private/shared toggle per list
 - **Chat**: Family group chat + private DMs with message request system, blocking, message deletion, media messages (photos, videos, voice notes via file upload + MediaRecorder API)
 - **Diary**: Protected private reflection space — PIN lock, mood tracking (10 moods), tags, photo attachments, privacy per entry, search/filter, mood insights with distribution charts, soft-delete with 30-day trash, diary settings (PIN, weekly reflection prompt)
