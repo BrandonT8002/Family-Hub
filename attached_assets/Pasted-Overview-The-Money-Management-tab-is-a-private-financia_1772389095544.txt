@@ -1,0 +1,185 @@
+Overview
+
+The Money Management tab is a private financial awareness and savings system designed to help families understand spending patterns, reduce waste, and build long-term wealth.
+
+It is not a banking app.
+It does not connect directly to bank accounts.
+It focuses on intentional manual tracking to increase awareness and accountability.
+
+The goal is clarity, not complexity.
+
+⸻
+
+Core Sections
+
+1. Financial Dashboard (Overview)
+
+The top of the tab shows:
+	•	Total spent this week
+	•	Total spent this month
+	•	Category breakdown (pie chart)
+	•	Comparison to previous week/month
+	•	Active savings goals progress
+
+This section answers:
+	•	Where is our money going?
+	•	Are we spending more than usual?
+	•	Are we improving?
+
+⸻
+
+2. Expense Tracking
+
+Users can manually log expenses.
+
+Each expense includes:
+	•	Amount
+	•	Category (customizable)
+	•	Store/vendor
+	•	Date
+	•	Optional notes
+	•	Optional tag (grocery, subscription, gas, etc.)
+
+Expenses can be:
+	•	Personal
+	•	Shared family
+
+Children can view financials only if the owner allows.
+
+⸻
+
+3. Category System
+
+Categories are customizable by the owner.
+
+Examples:
+	•	Groceries
+	•	Rent
+	•	Utilities
+	•	Subscriptions
+	•	Gas
+	•	Clothing
+	•	Dining Out
+	•	Entertainment
+	•	School
+	•	Miscellaneous
+
+Users can add new categories at any time.
+
+⸻
+
+4. Financial Schedule (Separate from Family Calendar)
+
+This section tracks recurring financial obligations:
+	•	Rent / mortgage
+	•	Netflix / streaming
+	•	Insurance
+	•	Payday
+	•	Utility due dates
+
+Each item can be:
+	•	One-time
+	•	Recurring (weekly, monthly, yearly)
+
+These items do NOT appear in the family event calendar.
+They live inside the money tab to avoid clutter.
+
+⸻
+
+5. Grocery & Shopping Analytics
+
+Integrated with the shopping list system.
+
+Features:
+	•	Manual price entry per item
+	•	Track price changes per store
+	•	Compare store averages
+	•	Weekly and monthly grocery spend snapshot
+	•	Yearly grocery comparison
+
+Purpose:
+	•	Provide evidence of inflation impact
+	•	Identify price increases
+	•	Encourage smarter store decisions
+
+Users can:
+	•	Skip price tracking entirely
+	•	Use a simplified “total spent only” mode
+
+⸻
+
+6. Savings Goals
+
+Users can create money-linked goals:
+
+Examples:
+	•	$1,500 couch fund
+	•	Vacation fund
+	•	Emergency savings
+	•	School supplies budget
+
+Each goal includes:
+	•	Target amount
+	•	Current saved amount
+	•	Visual progress indicator
+	•	Optional family participation
+
+Progress can be:
+	•	Manual contributions
+	•	Linked to expense reduction
+
+⸻
+
+7. Financial Snapshots
+
+Automatic summaries:
+	•	Weekly spending snapshot
+	•	Monthly comparison
+	•	Year-over-year comparison
+	•	Grocery trend analysis
+	•	Category growth or reduction
+
+The goal is pattern awareness over time.
+
+⸻
+
+Privacy & Permissions
+	•	Financial data is private by default.
+	•	Owner controls who can view financials.
+	•	Teens (15–17) can have controlled access.
+	•	Adults have independent privacy.
+
+No financial data is shared outside the family.
+No ads.
+No third-party tracking.
+
+⸻
+
+Design Philosophy
+
+The Money tab should feel:
+	•	Clean
+	•	Calm
+	•	Honest
+	•	Insightful
+	•	Non-judgmental
+
+It should never shame users.
+It should encourage improvement through visibility.
+
+⸻
+
+Emotional Goal
+
+This tab should:
+	•	Help families save money
+	•	Reduce stress about spending
+	•	Encourage financial conversations
+	•	Show long-term improvement
+	•	Create transparency without control
+
+If removed, families would lose:
+	•	Spending awareness
+	•	Goal clarity
+	•	Grocery price tracking
+	•	Financial structure

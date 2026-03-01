@@ -36,8 +36,31 @@ export const expenses = pgTable("expenses", {
   creatorId: text("creator_id").references(() => users.id).notNull(),
   amount: numeric("amount").notNull(),
   category: text("category").notNull(),
+  vendor: text("vendor"),
   description: text("description").notNull(),
-  date: timestamp("date").defaultNow(),
+  date: timestamp("date").defaultNow().notNull(),
+  notes: text("notes"),
+  tag: text("tag"), // grocery, subscription, gas, etc.
+});
+
+export const financialSchedule = pgTable("financial_schedule", {
+  id: serial("id").primaryKey(),
+  familyId: integer("family_id").references(() => families.id).notNull(),
+  title: text("title").notNull(),
+  amount: numeric("amount").notNull(),
+  type: text("type").notNull(), // One-time, Recurring
+  frequency: text("frequency"), // Weekly, Monthly, Yearly
+  dueDate: timestamp("due_date").notNull(),
+  isPayday: boolean("is_payday").default(false),
+});
+
+export const savingsGoals = pgTable("savings_goals", {
+  id: serial("id").primaryKey(),
+  familyId: integer("family_id").references(() => families.id).notNull(),
+  name: text("name").notNull(),
+  targetAmount: numeric("target_amount").notNull(),
+  currentAmount: numeric("current_amount").default("0").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const groceryLists = pgTable("grocery_lists", {

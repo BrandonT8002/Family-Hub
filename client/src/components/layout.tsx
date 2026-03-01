@@ -92,17 +92,17 @@ export function Layout({ children }: { children: ReactNode }) {
     <SidebarProvider style={style}>
       <div className="flex h-screen w-full bg-background overflow-hidden text-foreground">
         <AppSidebar />
-        <div className="flex flex-col flex-1 w-full relative">
+        <div className="flex flex-col flex-1 w-full relative overflow-hidden">
           <header className="flex lg:hidden items-center p-4 border-b border-border/50 glass z-10 sticky top-0">
             <SidebarTrigger className="hover-elevate" />
             <h1 className="ml-4 font-display font-semibold text-lg">{family.name}</h1>
           </header>
-          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="max-w-6xl mx-auto h-full"
+              className="max-w-6xl mx-auto"
             >
               {children}
             </motion.div>

@@ -1,6 +1,7 @@
 import { db } from "./db";
 import {
   families, familyMembers, events, expenses, groceryLists, groceryItems, chatMessages, users,
+  financialSchedule, savingsGoals,
   type InsertFamily, type InsertEvent, type InsertExpense, type InsertGroceryList, type InsertGroceryItem, type InsertChatMessage
 } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
@@ -16,8 +17,17 @@ export interface IStorage {
   
   // Expenses
   getExpenses(familyId: number): Promise<(typeof expenses.$inferSelect)[]>;
-  createExpense(expense: InsertExpense): Promise<typeof expenses.$inferSelect>;
+  createExpense(expense: any): Promise<typeof expenses.$inferSelect>;
   
+  // Financial Schedule
+  getFinancialSchedule(familyId: number): Promise<(typeof financialSchedule.$inferSelect)[]>;
+  createFinancialSchedule(item: any): Promise<typeof financialSchedule.$inferSelect>;
+
+  // Savings Goals
+  getSavingsGoals(familyId: number): Promise<(typeof savingsGoals.$inferSelect)[]>;
+  createSavingsGoal(goal: any): Promise<typeof savingsGoals.$inferSelect>;
+  updateSavingsGoal(id: number, currentAmount: string): Promise<typeof savingsGoals.$inferSelect>;
+
   // Groceries
   getGroceryLists(familyId: number): Promise<(typeof groceryLists.$inferSelect)[]>;
   createGroceryList(list: InsertGroceryList): Promise<typeof groceryLists.$inferSelect>;
@@ -57,9 +67,32 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(expenses).where(eq(expenses.familyId, familyId));
   }
 
-  async createExpense(expense: InsertExpense) {
+  async createExpense(expense: any) {
     const [newExpense] = await db.insert(expenses).values(expense).returning();
     return newExpense;
+  }
+
+  async getFinancialSchedule(familyId: number) {
+    return await db.select().from(financialSchedule).where(eq(financialSchedule.familyId, familyId));
+  }
+
+  async createFinancialSchedule(item: any) {
+    const [newItem] = await db.insert(financialSchedule).values(item).returning();
+    return newItem;
+  }
+
+  async getSavingsGoals(familyId: number) {
+    return await db.select().from(savingsGoals).where(eq(savingsGoals.familyId, familyId));
+  }
+
+  async createSavingsGoal(goal: any) {
+    const [newGoal] = await db.insert(savingsGoals).values(goal).returning();
+    return newGoal;
+  }
+
+  async updateSavingsGoal(id: number, currentAmount: string) {
+    const [updated] = await db.update(savingsGoals).set({ currentAmount }).where(eq(savingsGoals.id, id)).returning();
+    return updated;
   }
 
   async getGroceryLists(familyId: number) {

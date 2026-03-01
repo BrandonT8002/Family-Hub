@@ -76,13 +76,80 @@ export const api = {
       input: z.object({
         amount: z.number().or(z.string()),
         category: z.string(),
+        vendor: z.string().optional(),
         description: z.string(),
+        date: z.string().optional(),
+        notes: z.string().optional(),
+        tag: z.string().optional(),
       }),
       responses: {
         201: z.custom<typeof expenses.$inferSelect>(),
         400: errorSchemas.validation,
         401: errorSchemas.unauthorized,
       },
+    }
+  },
+  financialSchedule: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/financial-schedule' as const,
+      responses: {
+        200: z.array(z.custom<typeof financialSchedule.$inferSelect>()),
+        401: errorSchemas.unauthorized,
+      },
+    },
+    create: {
+      method: 'POST' as const,
+      path: '/api/financial-schedule' as const,
+      input: z.object({
+        title: z.string(),
+        amount: z.number().or(z.string()),
+        type: z.string(),
+        frequency: z.string().optional(),
+        dueDate: z.string(),
+        isPayday: z.boolean().optional(),
+      }),
+      responses: {
+        201: z.custom<typeof financialSchedule.$inferSelect>(),
+        400: errorSchemas.validation,
+        401: errorSchemas.unauthorized,
+      },
+    }
+  },
+  savingsGoals: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/savings-goals' as const,
+      responses: {
+        200: z.array(z.custom<typeof savingsGoals.$inferSelect>()),
+        401: errorSchemas.unauthorized,
+      },
+    },
+    create: {
+      method: 'POST' as const,
+      path: '/api/savings-goals' as const,
+      input: z.object({
+        name: z.string(),
+        targetAmount: z.number().or(z.string()),
+        currentAmount: z.number().or(z.string()).optional(),
+      }),
+      responses: {
+        201: z.custom<typeof savingsGoals.$inferSelect>(),
+        400: errorSchemas.validation,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    update: {
+      method: 'PATCH' as const,
+      path: '/api/savings-goals/:id' as const,
+      input: z.object({
+        currentAmount: z.number().or(z.string()),
+      }),
+      responses: {
+        200: z.custom<typeof savingsGoals.$inferSelect>(),
+        401: errorSchemas.unauthorized,
+        404: errorSchemas.notFound,
+      }
     }
   },
   groceryLists: {
