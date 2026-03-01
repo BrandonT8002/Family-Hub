@@ -1,38 +1,116 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import {
+  families, familyMembers, events, expenses, groceryLists, groceryItems, chatMessages, users,
+  type InsertFamily, type InsertEvent, type InsertExpense, type InsertGroceryList, type InsertGroceryItem, type InsertChatMessage
+} from "@shared/schema";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // Family
+  getFamilyForUser(userId: string): Promise<typeof families.$inferSelect | null>;
+  createFamily(name: string, ownerId: string): Promise<typeof families.$inferSelect>;
+  
+  // Events
+  getEvents(familyId: number): Promise<(typeof events.$inferSelect)[]>;
+  createEvent(event: InsertEvent): Promise<typeof events.$inferSelect>;
+  
+  // Expenses
+  getExpenses(familyId: number): Promise<(typeof expenses.$inferSelect)[]>;
+  createExpense(expense: InsertExpense): Promise<typeof expenses.$inferSelect>;
+  
+  // Groceries
+  getGroceryLists(familyId: number): Promise<(typeof groceryLists.$inferSelect)[]>;
+  createGroceryList(list: InsertGroceryList): Promise<typeof groceryLists.$inferSelect>;
+  getGroceryItems(listId: number): Promise<(typeof groceryItems.$inferSelect)[]>;
+  createGroceryItem(item: InsertGroceryItem): Promise<typeof groceryItems.$inferSelect>;
+  toggleGroceryItem(id: number, isChecked: boolean): Promise<typeof groceryItems.$inferSelect>;
+
+  // Chat
+  getChatMessages(familyId: number): Promise<any[]>;
+  createChatMessage(message: InsertChatMessage): Promise<typeof chatMessages.$inferSelect>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getFamilyForUser(userId: string) {
+    const [membership] = await db.select().from(familyMembers).where(eq(familyMembers.userId, userId));
+    if (!membership) return null;
+    const [family] = await db.select().from(families).where(eq(families.id, membership.familyId));
+    return family || null;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async createFamily(name: string, ownerId: string) {
+    const [family] = await db.insert(families).values({ name, ownerId }).returning();
+    await db.insert(familyMembers).values({ familyId: family.id, userId: ownerId, role: "Owner" });
+    return family;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async getEvents(familyId: number) {
+    return await db.select().from(events).where(eq(events.familyId, familyId));
+  }
+  
+  async createEvent(event: InsertEvent) {
+    const [newEvent] = await db.insert(events).values(event).returning();
+    return newEvent;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getExpenses(familyId: number) {
+    return await db.select().from(expenses).where(eq(expenses.familyId, familyId));
+  }
+
+  async createExpense(expense: InsertExpense) {
+    const [newExpense] = await db.insert(expenses).values(expense).returning();
+    return newExpense;
+  }
+
+  async getGroceryLists(familyId: number) {
+    return await db.select().from(groceryLists).where(eq(groceryLists.familyId, familyId));
+  }
+
+  async createGroceryList(list: InsertGroceryList) {
+    const [newList] = await db.insert(groceryLists).values(list).returning();
+    return newList;
+  }
+
+  async getGroceryItems(listId: number) {
+    return await db.select().from(groceryItems).where(eq(groceryItems.listId, listId));
+  }
+
+  async createGroceryItem(item: InsertGroceryItem) {
+    const [newItem] = await db.insert(groceryItems).values(item).returning();
+    return newItem;
+  }
+
+  async toggleGroceryItem(id: number, isChecked: boolean) {
+    const [updated] = await db.update(groceryItems).set({ isChecked }).where(eq(groceryItems.id, id)).returning();
+    return updated;
+  }
+
+  async getChatMessages(familyId: number) {
+    const msgs = await db.select({
+      id: chatMessages.id,
+      familyId: chatMessages.familyId,
+      senderId: chatMessages.senderId,
+      content: chatMessages.content,
+      createdAt: chatMessages.createdAt,
+      user: {
+        firstName: users.firstName,
+        lastName: users.lastName,
+        profileImageUrl: users.profileImageUrl,
+      }
+    })
+    .from(chatMessages)
+    .innerJoin(users, eq(chatMessages.senderId, users.id))
+    .where(eq(chatMessages.familyId, familyId))
+    .orderBy(desc(chatMessages.createdAt))
+    .limit(50);
+    
+    return msgs.reverse();
+  }
+
+  async createChatMessage(message: InsertChatMessage) {
+    const [newMsg] = await db.insert(chatMessages).values(message).returning();
+    return newMsg;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

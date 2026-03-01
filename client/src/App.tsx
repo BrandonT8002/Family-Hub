@@ -5,14 +5,28 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
+// App Components
+import { Layout } from "@/components/layout";
+import Dashboard from "@/pages/dashboard";
+import Schedule from "@/pages/schedule";
+import Money from "@/pages/money";
+import Groceries from "@/pages/groceries";
+import GroceryListDetail from "@/pages/grocery-list-detail";
+import Chat from "@/pages/chat";
+
 function Router() {
   return (
-    <Switch>
-      {/* Add pages below */}
-      {/* <Route path="/" component={Home}/> */}
-      {/* Fallback to 404 */}
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={Dashboard}/>
+        <Route path="/schedule" component={Schedule}/>
+        <Route path="/money" component={Money}/>
+        <Route path="/groceries" component={Groceries}/>
+        <Route path="/groceries/:listId" component={GroceryListDetail}/>
+        <Route path="/chat" component={Chat}/>
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 
