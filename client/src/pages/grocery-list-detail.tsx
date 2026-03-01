@@ -37,7 +37,9 @@ export default function GroceryListDetail() {
         listId, 
         name: newItemName, 
         category: selectedCategory,
-        price: price || "0"
+        price: price || "0",
+        notes: null,
+        assignedTo: null
       },
       { onSuccess: () => {
         setNewItemName("");
