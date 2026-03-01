@@ -58,7 +58,7 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(events).where(eq(events.familyId, familyId));
   }
   
-  async createEvent(event: InsertEvent) {
+  async createEvent(event: any) {
     const [newEvent] = await db.insert(events).values(event).returning();
     return newEvent;
   }

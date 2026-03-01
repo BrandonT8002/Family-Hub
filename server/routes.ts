@@ -73,8 +73,14 @@ export async function registerRoutes(
       const event = await storage.createEvent({
         ...input,
         date: new Date(input.date),
+        startTime: input.startTime ? new Date(input.startTime) : null,
+        endTime: input.endTime ? new Date(input.endTime) : null,
         familyId: req.family.id,
         creatorId: req.user.claims.sub,
+        recurrence: input.recurrence || "One-time",
+        isPersonal: !!input.isPersonal,
+        notes: input.notes || null,
+        location: input.location || null,
       });
       res.status(201).json(event);
     } catch (err) {

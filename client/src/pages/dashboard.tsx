@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useExpenses, useFinancialSchedule, useSavingsGoals } from "@/hooks/use-expenses";
 import { useEvents } from "@/hooks/use-events";
 import { format, isSameDay, startOfMonth, endOfMonth, isAfter, isBefore } from "date-fns";
@@ -42,10 +43,35 @@ export default function Dashboard() {
     .slice(0, 3) || [];
 
   const activeGoals = goals?.slice(0, 2) || [];
-  const todayEvents = events?.filter(e => isSameDay(new Date(e.startTime), today)) || [];
+  const todayEvents = events?.filter(e => isSameDay(new Date(e.date), today)) || [];
+
+  const [showWalkOut, setShowWalkOut] = useState(true);
+  const isMorning = today.getHours() >= 5 && today.getHours() < 11;
 
   return (
     <div className="space-y-8 pb-10">
+      {isMorning && showWalkOut && (
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="rounded-[2rem] border-primary/20 bg-primary/10 border-2 shadow-sm overflow-hidden">
+            <CardContent className="p-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="bg-white/80 p-3 rounded-2xl shadow-sm">
+                  <Clock className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg">Good morning!</h3>
+                  <p className="text-slate-600 font-bold">What time are you planning on walking out today?</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" className="rounded-xl font-black px-6" onClick={() => setShowWalkOut(false)}>Set Time</Button>
+                <Button variant="ghost" size="sm" className="rounded-xl font-bold" onClick={() => setShowWalkOut(false)}>Dismiss</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       <header>
         <h1 className="text-4xl font-display font-bold tracking-tight">Family Overview</h1>
         <p className="text-muted-foreground mt-2 text-lg">Everything at a glance for your household.</p>
@@ -99,13 +125,13 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-3 mb-6">
               {todayEvents.length > 0 ? (
-                todayEvents.slice(0, 1).map(event => (
+                todayEvents.slice(0, 3).map(event => (
                   <div key={event.id} className="flex items-center gap-3 text-sm truncate bg-slate-50 p-3 rounded-2xl border-2 border-white shadow-sm">
                     <div className="bg-primary/20 p-1.5 rounded-lg">
                       <Clock className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <p className="font-black text-slate-900 leading-none mb-1">{format(new Date(event.startTime), 'h:mm a')}</p>
+                      <p className="font-black text-slate-900 leading-none mb-1">{format(new Date(event.date), 'h:mm a')}</p>
                       <p className="truncate font-bold text-slate-500 leading-none">{event.title}</p>
                     </div>
                   </div>

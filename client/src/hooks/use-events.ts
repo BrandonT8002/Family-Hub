@@ -16,7 +16,16 @@ export function useEvents() {
 export function useCreateEvent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { title: string; description?: string; date: string; isShared?: boolean }) => {
+    mutationFn: async (data: { 
+      title: string; 
+      description?: string; 
+      date: string; 
+      startTime?: string;
+      recurrence?: string;
+      isPersonal?: boolean;
+      notes?: string;
+      location?: string;
+    }) => {
       const res = await apiRequest("POST", api.events.create.path, data);
       return api.events.create.responses[201].parse(await res.json());
     },

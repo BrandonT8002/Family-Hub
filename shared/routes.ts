@@ -52,7 +52,12 @@ export const api = {
         title: z.string(),
         description: z.string().optional(),
         date: z.string(),
-        isShared: z.boolean().optional().default(true),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+        recurrence: z.string().optional(),
+        isPersonal: z.boolean().optional(),
+        notes: z.string().optional(),
+        location: z.string().optional(),
       }),
       responses: {
         201: z.custom<typeof events.$inferSelect>(),
