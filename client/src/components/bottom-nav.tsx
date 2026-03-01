@@ -20,6 +20,7 @@ import {
   X,
   Clock,
   ClipboardList,
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -37,14 +38,25 @@ const caregiverPrimaryNav = [
   { title: "Chat", url: "/chat", icon: MessageSquare },
 ];
 
-const moreNav = [
-  { title: "Money", url: "/money", icon: Wallet },
-  { title: "Diary", url: "/diary", icon: BookOpen },
-  { title: "Goals", url: "/goals", icon: Target },
-  { title: "Wishlists", url: "/wishlists", icon: Heart },
-  { title: "Leave Time", url: "/leave-time", icon: Clock },
-  { title: "Settings", url: "/settings", icon: Settings },
+const moreNavSections = [
+  {
+    label: "Essentials",
+    items: [
+      { title: "Money", url: "/money", icon: Wallet, description: "Bills, expenses & savings", accent: "bg-emerald-50 text-emerald-600" },
+      { title: "Goals", url: "/goals", icon: Target, description: "Track what matters", accent: "bg-blue-50 text-blue-600" },
+      { title: "Wishlists", url: "/wishlists", icon: Heart, description: "Share what you'd love", accent: "bg-pink-50 text-pink-600" },
+    ],
+  },
+  {
+    label: "Personal",
+    items: [
+      { title: "Diary", url: "/diary", icon: BookOpen, description: "Private reflections", accent: "bg-amber-50 text-amber-600" },
+      { title: "Leave Time", url: "/leave-time", icon: Clock, description: "Walk-out reminders", accent: "bg-violet-50 text-violet-600" },
+    ],
+  },
 ];
+
+const allMoreUrls = moreNavSections.flatMap(s => s.items.map(i => i.url)).concat(["/settings"]);
 
 export function BottomNav() {
   const [location, setLocation] = useLocation();
@@ -87,7 +99,7 @@ export function BottomNav() {
     url === "/" ? location === "/" : location.startsWith(url);
 
   const navItems = isCaregiver ? caregiverPrimaryNav : primaryNav;
-  const isMoreActive = !isCaregiver && moreNav.some((item) => isActive(item.url));
+  const isMoreActive = !isCaregiver && allMoreUrls.some((url) => isActive(url));
 
   return (
     <>
@@ -115,33 +127,66 @@ export function BottomNav() {
           >
             <div className="bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/60 overflow-hidden max-w-lg mx-auto">
               <div className="flex justify-center pt-3 pb-1">
-                <div className="w-10 h-1 rounded-full bg-gray-300" />
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
               </div>
 
-              <div className="grid grid-cols-3 gap-1 px-4 pb-3">
-                {moreNav.map((item) => {
-                  const active = isActive(item.url);
-                  return (
-                    <Link key={item.url} href={item.url}>
-                      <button
-                        className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl w-full transition-all duration-200 ${
-                          active
-                            ? "bg-primary/10 text-primary"
-                            : "text-gray-500 hover:bg-gray-100 active:scale-95"
-                        }`}
-                        data-testid={`nav-more-${item.title.toLowerCase().replace(/\s/g, '-')}`}
-                      >
-                        <item.icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : ""}`} />
-                        <span className={`text-[11px] leading-none ${active ? "font-bold" : "font-medium"}`}>
-                          {item.title}
-                        </span>
-                      </button>
-                    </Link>
-                  );
-                })}
+              {moreNavSections.map((section) => (
+                <div key={section.label} className="px-4 pb-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 px-2 pt-2 pb-1.5">{section.label}</p>
+                  <div className="space-y-0.5">
+                    {section.items.map((item) => {
+                      const active = isActive(item.url);
+                      return (
+                        <Link key={item.url} href={item.url}>
+                          <button
+                            className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-2xl transition-all duration-200 ${
+                              active
+                                ? "bg-primary/8 text-primary"
+                                : "text-gray-700 hover:bg-gray-50 active:scale-[0.98]"
+                            }`}
+                            data-testid={`nav-more-${item.title.toLowerCase().replace(/\s/g, '-')}`}
+                          >
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${active ? "bg-primary/10 text-primary" : item.accent}`}>
+                              <item.icon className="w-[18px] h-[18px]" />
+                            </div>
+                            <div className="flex-1 text-left min-w-0">
+                              <p className={`text-sm leading-tight ${active ? "font-bold" : "font-semibold"}`}>{item.title}</p>
+                              <p className="text-[11px] text-gray-400 leading-tight mt-0.5">{item.description}</p>
+                            </div>
+                            <ChevronRight className={`w-4 h-4 shrink-0 ${active ? "text-primary/50" : "text-gray-300"}`} />
+                          </button>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              <div className="px-4 pb-2">
+                <Link href="/settings">
+                  <button
+                    className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-2xl transition-all duration-200 ${
+                      isActive("/settings")
+                        ? "bg-primary/8 text-primary"
+                        : "text-gray-700 hover:bg-gray-50 active:scale-[0.98]"
+                    }`}
+                    data-testid="nav-more-settings"
+                  >
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isActive("/settings") ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500"}`}>
+                      <Settings className="w-[18px] h-[18px]" />
+                    </div>
+                    <div className="flex-1 text-left min-w-0">
+                      <p className={`text-sm leading-tight ${isActive("/settings") ? "font-bold" : "font-semibold"}`}>Settings</p>
+                      <p className="text-[11px] text-gray-400 leading-tight mt-0.5">Theme, font & preferences</p>
+                    </div>
+                    <ChevronRight className={`w-4 h-4 shrink-0 ${isActive("/settings") ? "text-primary/50" : "text-gray-300"}`} />
+                  </button>
+                </Link>
               </div>
 
-              <div className="border-t border-gray-100 px-5 py-3 flex items-center gap-3">
+              <div className="border-t border-gray-100/80 mx-4" />
+
+              <div className="px-5 py-3 flex items-center gap-3">
                 <Avatar className="w-9 h-9 border-2 border-white shadow-sm">
                   <AvatarImage src={user?.profileImageUrl || undefined} />
                   <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
