@@ -16,6 +16,7 @@ export interface IStorage {
 
   getFamilyMembers(familyId: number): Promise<any[]>;
   getMemberRole(familyId: number, userId: string): Promise<string | null>;
+  removeFamilyMember(id: number, familyId: number): Promise<void>;
 
   getEvents(familyId: number): Promise<(typeof events.$inferSelect)[]>;
   createEvent(event: InsertEvent): Promise<typeof events.$inferSelect>;
@@ -162,6 +163,12 @@ export class DatabaseStorage implements IStorage {
       and(eq(familyMembers.familyId, familyId), eq(familyMembers.userId, userId))
     );
     return member?.role || null;
+  }
+
+  async removeFamilyMember(id: number, familyId: number) {
+    await db.delete(familyMembers).where(
+      and(eq(familyMembers.id, id), eq(familyMembers.familyId, familyId))
+    );
   }
 
   async getEvents(familyId: number) {

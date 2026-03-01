@@ -5,10 +5,19 @@ import { z } from "zod";
 export * from "./models/auth";
 import { users } from "./models/auth";
 
+export const FAMILY_TIERS = {
+  core: { label: "Family Core", maxMembers: 2, maxCaregivers: 1 },
+  plus: { label: "Family Plus", maxMembers: 5, maxCaregivers: 2 },
+  extended: { label: "Family Extended", maxMembers: 10, maxCaregivers: 4 },
+} as const;
+
+export type FamilyTier = keyof typeof FAMILY_TIERS;
+
 export const families = pgTable("families", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   ownerId: text("owner_id").references(() => users.id).notNull(),
+  tier: text("tier").notNull().default("core"),
   fontFamily: text("font_family").default("Bricolage Grotesque"),
   themeConfig: jsonb("theme_config").default({
     home: "#f8f9fa",
@@ -32,6 +41,13 @@ export const familyMembers = pgTable("family_members", {
   displayName: text("display_name"),
   dateOfBirth: timestamp("date_of_birth"),
 });
+
+export const ROLE_AGE_RULES = {
+  Adult: { minAge: 18, maxAge: 999, label: "Adult (18+)" },
+  Teen: { minAge: 15, maxAge: 17, label: "Teen (15–17)" },
+  Youth: { minAge: 13, maxAge: 14, label: "Youth (13–14)" },
+  Child: { minAge: 0, maxAge: 12, label: "Child (12 and under)" },
+} as const;
 
 export const events = pgTable("events", {
   id: serial("id").primaryKey(),

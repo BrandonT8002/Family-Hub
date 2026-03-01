@@ -35,7 +35,7 @@ server/
 
 ## Database Tables
 - **users** - Replit Auth users
-- **families** - Family groups with theme/font config
+- **families** - Family groups with tier (core/plus/extended), theme/font config
 - **family_members** - Join table (userId, familyId, role, displayName, dateOfBirth)
 - **events** - Calendar events (personal/shared, recurring)
 - **expenses** - Money tracking
@@ -71,7 +71,9 @@ server/
 - **Goals**: Comprehensive goal tracking with user-created categories (starter pack available), short-term and long-term goals, 4 progress types (checklist, numeric, streak/consistency, milestones), personal/family visibility, active/completed/archived status, due date tracking with overdue alerts, filtering by type/category, sorting by due date/recently updated, streak tracking with daily check-in and best streak counter
 - **Leave Time**: Intention-setting walk-out time system — recurring weekly schedule (per-day times), same-weekday/everyday quick-set, daily overrides, skip today, pre-departure checklist with quick-add suggestions and reusable templates, reminder timing (5-30 min), private/family visibility, dashboard integration with countdown and interactive checklist, kind non-judgmental tone
 - **Caregiver Mode**: Limited-access mode for babysitters/nannies/grandparents — owner adds caregivers by Replit user ID, assigns children, configures permissions (schedule access level, chat, care notes). Caregivers see simplified dashboard with assigned children, schedule (non-personal events only), care note logging (feeding/diaper/medication/nap/behavioral/mood/general with 24h lock), and parent messaging (DMs only with adults, no group chat access). Bottom nav shows 4 items for caregivers (Home, Schedule, Notes, Chat). All sensitive routes (money, diary, goals, wishlists, groceries, leave-time) blocked via `blockCaregivers` middleware. Frontend route guards redirect caregivers from protected pages. Chat filtering: server-side conversation list returns DMs only for caregivers; DM creation restricted to Adult/Owner recipients; client-side member list filtered accordingly.
-- **Settings**: Theme presets (Soft Cloud, Warm Sand, Ocean Mist, Lavender Dusk, Forest Morning, Monochrome, Deep Night), font selection, per-module color customization, caregiver management (add/edit permissions/revoke), family invite link generation
+- **Settings**: Theme presets, font selection, per-module color customization, member management (list/add/remove with invite links), family tier selection (Core: 2 members/1 caregiver, Plus: 5/2, Extended: 10/4), caregiver management (add/edit permissions/revoke)
+- **Family Tiers**: Core (2 members, 1 caregiver), Plus (5 members, 2 caregivers), Extended (10 members, 4 caregivers). Capacity enforced on invite acceptance and caregiver addition. Downgrade blocked if over limit.
+- **Age Validation**: DOB required on invite acceptance. Roles mapped to age ranges: Adult (18+), Teen (15-17), Youth (13-14), Child (12 and under). Server rejects mismatched age/role.
 
 ## Privacy Architecture
 - Role-based: Owner, Adult, Teen, Youth, Child, Caregiver

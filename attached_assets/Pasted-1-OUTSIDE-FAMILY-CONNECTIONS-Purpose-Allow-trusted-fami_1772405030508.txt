@@ -1,0 +1,348 @@
+1️⃣ OUTSIDE FAMILY CONNECTIONS
+
+Purpose
+
+Allow trusted families to connect for coordination — without merging data or violating privacy.
+
+This is not social networking.
+This is structured cross-family collaboration.
+
+⸻
+
+What It Allows
+
+Two separate family accounts can connect for:
+	•	Holiday coordination
+	•	Gift planning (Christmas, birthdays, graduations)
+	•	Shared event scheduling (recitals, sports, reunions)
+	•	Childcare logistics
+	•	Caregiver communication
+	•	Vacation planning between households
+
+⸻
+
+What It Does NOT Allow
+	•	No viewing of other family’s finances
+	•	No viewing of other family’s goals
+	•	No viewing of private chats
+	•	No access to documents
+	•	No access to diaries
+	•	No access to health snapshots
+
+Each family account remains sealed.
+
+⸻
+
+Permission Structure
+
+Connection requires:
+	•	Invitation
+	•	Acceptance
+	•	Owner approval (if minors are involved)
+
+Each connection can be customized:
+	•	View shared events only
+	•	Participate in shared polls
+	•	Chat access (optional)
+	•	Care notes access (if caregiver)
+
+Connections can be removed at any time.
+
+⸻
+
+Why It Matters
+
+Modern families are blended, extended, or co-parenting.
+
+This allows coordination without data exposure.
+
+⸻
+
+2️⃣ ACADEMIC TRACKING
+
+Purpose
+
+Support student growth while keeping parents aligned — without micromanagement.
+
+This is a tracking and awareness tool, not a school portal.
+
+⸻
+
+Modes (Your Chosen Naming)
+
+• Snapshot Mode (Basic)
+• Deep View Mode (Detailed)
+
+⸻
+
+What Can Be Tracked
+	•	Class names
+	•	Teacher name
+	•	Grading scale (customizable)
+	•	Percentage
+	•	A–F
+	•	Elementary (E, S, U, etc.)
+	•	Custom scale
+	•	Assignments
+	•	Test scores
+	•	Overall grade trends
+	•	Notes per class
+	•	Academic goals
+
+⸻
+
+Template System
+
+Owner can:
+	•	Create an academic template for child
+	•	Share structured layout
+
+Student can:
+	•	Use shared template
+	•	Build their own custom view
+	•	Share selectively
+
+⸻
+
+Visibility Rules
+	•	Parent must obtain real grades (manual entry system).
+	•	Owner controls visibility for minors.
+	•	Teens (15–17) have increased autonomy.
+	•	Adults (18+) fully control their academic data.
+
+⸻
+
+Why It Matters
+
+Prevents slipping.
+Encourages conversation.
+Tracks progress over time.
+
+Not surveillance — alignment.
+
+⸻
+
+3️⃣ WORKOUT TRACKING
+
+Purpose
+
+Track physical consistency and progress without turning the app into a fitness obsession platform.
+
+⸻
+
+What It Tracks
+	•	Workout type
+	•	Duration
+	•	Reps
+	•	Weight lifted
+	•	Distance
+	•	Personal notes
+	•	Frequency
+
+⸻
+
+Progress Tracking
+	•	Weekly view
+	•	Monthly trend
+	•	Regression alerts (optional)
+	•	Milestone acknowledgment (soft, not gamified)
+
+⸻
+
+Accountability Pairing (Optional)
+
+Users can:
+	•	Pair with another member
+	•	Share progress
+	•	Encourage consistency
+
+⸻
+
+Privacy
+	•	Personal by default
+	•	Shareable by choice
+	•	Owner cannot automatically see adult logs
+	•	Teen visibility depends on permissions
+
+⸻
+
+Why It Matters
+
+Health retention increases long-term engagement.
+
+Progress graphs build attachment.
+
+⸻
+
+4️⃣ CHAT (Layered Privacy)
+
+Purpose
+
+Enable structured communication inside the family without surveillance or hierarchy abuse.
+
+⸻
+
+Chat Types
+	1.	Family-wide chat
+	2.	Individual private chats
+	3.	Group chats (created by users)
+	4.	Outside-family chats (if connected)
+
+⸻
+
+Privacy Rules
+	•	Owner cannot see private chats between other members.
+	•	Owner cannot see who is messaging whom.
+	•	Messages require acceptance when first initiated.
+	•	If chat is deleted, new message request requires re-acceptance.
+	•	Block feature includes 24-hour cool-down.
+	•	“Take Space” option mutes without notification.
+
+⸻
+
+Age Controls
+	•	Under 18 messaging controlled by owner.
+	•	15–17 increased autonomy.
+	•	Adults fully independent.
+
+⸻
+
+Why It Matters
+
+Trust.
+
+If users feel monitored, they leave.
+
+Layered privacy keeps safety without surveillance.
+
+⸻
+
+5️⃣ PERMISSIONS MATRIX
+
+Purpose
+
+Define exactly who can see and do what — clearly, transparently, and reversibly.
+
+This is the backbone of the app.
+
+⸻
+
+Permission Levels
+
+Owner
+	•	Invite/remove members
+	•	Assign temporary admin
+	•	Set minor visibility rules
+	•	Override blocked tasks
+	•	Control caregiver access
+	•	Set sharing controls for underage users
+
+Temporary Admin
+	•	Limited owner powers
+	•	Cannot remove owner
+	•	Cannot alter ownership
+
+Adult Member (18+)
+	•	Full personal privacy
+	•	Cannot access others’ private data
+	•	Can create own family account if leaving
+
+Teen (15–17)
+	•	Expanded autonomy
+	•	Diary protected
+	•	Personal scheduling private by default
+	•	Messaging controlled but not monitored
+
+Child (13–14)
+	•	Email integration optional
+	•	Owner approval required
+	•	Controlled visibility
+
+12 and Under
+	•	Username-based login
+	•	No email required
+	•	Owner manages notifications
+	•	Limited sharing capability
+
+⸻
+
+Caregiver Role
+	•	Limited to care notes
+	•	No access to finances
+	•	No access to private chats
+	•	Time-limited permissions
+
+⸻
+
+Why It Matters
+
+Clear structure prevents conflict.
+
+Transparency prevents confusion.
+
+⸻
+
+6️⃣ ANNUAL SNAPSHOTS
+
+Purpose
+
+Provide yearly reflection and measurable growth review.
+
+⸻
+
+What It Summarizes
+	•	Total goals completed
+	•	Savings trends
+	•	Grocery spending comparison
+	•	Academic improvement
+	•	Workout consistency
+	•	Major milestones
+	•	Emotional state patterns (if enabled)
+
+⸻
+
+Time Frames
+	•	Weekly snapshot (optional)
+	•	Monthly overview
+	•	Yearly review
+	•	Multi-year tracking
+
+⸻
+
+Shopping Integration
+	•	Grocery spending trends
+	•	Inflation drift tracking
+	•	Clothing or seasonal shopping trends
+	•	Average store comparisons
+
+⸻
+
+Format
+	•	Visual charts
+	•	Pie graphs
+	•	Category breakdown
+	•	Reflection summary
+
+⸻
+
+Why It Matters
+
+Shows progress.
+Encourages pride.
+Creates attachment to long-term data.
+
+⸻
+
+Strategic View
+
+These six features together define the spine of the family product:
+	•	Outside Coordination
+	•	Academic Stability
+	•	Health & Fitness Awareness
+	•	Safe Communication
+	•	Clear Permission Structure
+	•	Long-Term Growth Tracking
+
+This is not a productivity app.
+
+This is structured family infrastructure.

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
-import { Paintbrush, Palette, Check, RefreshCcw, Type, UserPlus, Shield, X, Trash2, Edit2, Link2, Copy, Loader2 } from "lucide-react";
+import { Paintbrush, Palette, Check, RefreshCcw, Type, UserPlus, Shield, X, Trash2, Edit2, Link2, Copy, Loader2, Users, Crown, ChevronUp, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCaregivers, useAddCaregiver, useRevokeCaregiver, useUpdateCaregiver } from "@/hooks/use-caregivers";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,6 +14,8 @@ import { Switch } from "@/components/ui/switch";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
+import { FAMILY_TIERS, ROLE_AGE_RULES } from "@shared/schema";
+import type { FamilyTier } from "@shared/schema";
 
 const FONTS = [
   { name: "Bricolage Grotesque", value: "'Bricolage Grotesque', sans-serif" },
@@ -311,22 +313,29 @@ export default function Settings() {
         </div>
       </div>
 
-      {isOwner && <InviteManagement familyId={family.id} />}
+      {isOwner && <MemberManagement family={family} />}
       {isOwner && <CaregiverManagement familyId={family.id} />}
     </div>
   );
 }
 
-function InviteManagement({ familyId }: { familyId: number }) {
+function MemberManagement({ family }: { family: any }) {
   const { toast } = useToast();
   const qc = useQueryClient();
+  const { data: members, isLoading: membersLoading } = useQuery({ queryKey: ['/api/family/members'] });
+  const { data: invites } = useQuery({ queryKey: ['/api/family-invites'] });
+  const { data: caregiversList } = useCaregivers();
+
   const [inviteRole, setInviteRole] = useState("Adult");
   const [inviteName, setInviteName] = useState("");
   const [expiresInDays, setExpiresInDays] = useState("7");
+  const [showInviteForm, setShowInviteForm] = useState(false);
 
-  const { data: invites, isLoading } = useQuery({
-    queryKey: ['/api/family-invites'],
-  });
+  const tier = ((family as any).tier || "core") as FamilyTier;
+  const tierConfig = FAMILY_TIERS[tier] || FAMILY_TIERS.core;
+  const memberCount = (members as any[])?.length || 0;
+  const activeCaregiverCount = (caregiversList || []).filter((c: any) => c.status !== "revoked").length;
+  const atMemberCapacity = memberCount >= tierConfig.maxMembers;
 
   const createInvite = useMutation({
     mutationFn: async () => {
@@ -340,6 +349,7 @@ function InviteManagement({ familyId }: { familyId: number }) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['/api/family-invites'] });
       setInviteName("");
+      setShowInviteForm(false);
       toast({ title: "Invite link created!" });
     },
     onError: () => toast({ title: "Failed to create invite", variant: "destructive" }),
@@ -355,113 +365,257 @@ function InviteManagement({ familyId }: { familyId: number }) {
     },
   });
 
+  const removeMember = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/family/members/${id}`);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['/api/family/members'] });
+      toast({ title: "Member removed" });
+    },
+    onError: () => toast({ title: "Failed to remove member", variant: "destructive" }),
+  });
+
+  const updateTier = useMutation({
+    mutationFn: async (newTier: string) => {
+      const res = await apiRequest("PATCH", "/api/family/tier", { tier: newTier });
+      return res.json();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['/api/family'] });
+      toast({ title: "Plan updated!" });
+    },
+    onError: (err: any) => toast({ title: "Cannot change plan", description: err.message, variant: "destructive" }),
+  });
+
   const copyLink = (token: string) => {
     const url = `${window.location.origin}/join/${token}`;
     navigator.clipboard.writeText(url);
     toast({ title: "Link copied!" });
   };
 
+  const handleRemove = (member: any) => {
+    if (!confirm(`Remove ${member.displayName || member.user?.firstName || "this member"} from the family? They will lose access immediately.`)) return;
+    removeMember.mutate(member.id);
+  };
+
   const activeInvites = (invites as any[])?.filter((i: any) => i.status === "pending") || [];
   const usedInvites = (invites as any[])?.filter((i: any) => i.status !== "pending") || [];
 
+  const roleIcon = (role: string) => {
+    switch (role) {
+      case "Owner": return <Crown className="w-3.5 h-3.5 text-amber-500" />;
+      default: return null;
+    }
+  };
+
+  const roleColor = (role: string) => {
+    switch (role) {
+      case "Owner": return "bg-amber-50 text-amber-700 border-amber-200";
+      case "Adult": return "bg-blue-50 text-blue-700 border-blue-200";
+      case "Teen": return "bg-violet-50 text-violet-700 border-violet-200";
+      case "Youth": return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "Child": return "bg-pink-50 text-pink-700 border-pink-200";
+      default: return "bg-slate-50 text-slate-700 border-slate-200";
+    }
+  };
+
   return (
-    <Card className="rounded-3xl border-0 shadow-lg mt-8" data-testid="card-invite-management">
+    <Card className="rounded-[2.5rem] border-white/80 shadow-xl bg-white/90 backdrop-blur-xl overflow-hidden" data-testid="card-member-management">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Link2 className="w-5 h-5" />
-          Invite Family Members
-        </CardTitle>
-        <CardDescription>Generate invite links for family members to join. They'll sign in and enter their age.</CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-50 p-3 rounded-2xl">
+              <Users className="w-6 h-6 text-blue-500" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-black">Members</CardTitle>
+              <CardDescription className="font-bold">Manage who's in your family.</CardDescription>
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowInviteForm(!showInviteForm)}
+            disabled={atMemberCapacity}
+            className="rounded-xl font-bold"
+            data-testid="button-add-member"
+          >
+            {showInviteForm ? <X className="w-4 h-4 mr-1" /> : <UserPlus className="w-4 h-4 mr-1" />}
+            {showInviteForm ? "Cancel" : "Add Member"}
+          </Button>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-5">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold">Name (optional)</label>
-            <Input
-              value={inviteName}
-              onChange={e => setInviteName(e.target.value)}
-              placeholder="e.g. Mom, Dad, Alex"
-              className="rounded-xl h-10"
-              data-testid="input-invite-name"
+      <CardContent className="space-y-6">
+        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Family Plan</p>
+              <p className="text-lg font-black text-slate-800 mt-0.5">{tierConfig.label}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-bold text-slate-500">{memberCount} / {tierConfig.maxMembers} members</p>
+              <p className="text-xs font-bold text-slate-400">{activeCaregiverCount} / {tierConfig.maxCaregivers} caregivers</p>
+            </div>
+          </div>
+          <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${atMemberCapacity ? 'bg-amber-500' : 'bg-blue-500'}`}
+              style={{ width: `${Math.min(100, (memberCount / tierConfig.maxMembers) * 100)}%` }}
             />
           </div>
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold">Role</label>
-            <Select value={inviteRole} onValueChange={setInviteRole}>
-              <SelectTrigger className="rounded-xl h-10" data-testid="select-invite-role">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Adult">Adult</SelectItem>
-                <SelectItem value="Teen">Teen</SelectItem>
-                <SelectItem value="Youth">Youth</SelectItem>
-                <SelectItem value="Child">Child</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold">Expires</label>
-            <Select value={expiresInDays} onValueChange={setExpiresInDays}>
-              <SelectTrigger className="rounded-xl h-10" data-testid="select-invite-expires">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1 day</SelectItem>
-                <SelectItem value="3">3 days</SelectItem>
-                <SelectItem value="7">7 days</SelectItem>
-                <SelectItem value="30">30 days</SelectItem>
-                <SelectItem value="never">Never</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex gap-2 mt-3">
+            {(Object.keys(FAMILY_TIERS) as FamilyTier[]).map((t) => (
+              <button
+                key={t}
+                onClick={() => updateTier.mutate(t)}
+                disabled={t === tier || updateTier.isPending}
+                className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border-2 transition-all ${
+                  t === tier
+                    ? "border-blue-400 bg-blue-50 text-blue-700"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                }`}
+                data-testid={`button-tier-${t}`}
+              >
+                {FAMILY_TIERS[t].label}
+                <span className="block text-[10px] font-medium mt-0.5 opacity-70">
+                  {FAMILY_TIERS[t].maxMembers} members
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
-        <Button
-          onClick={() => createInvite.mutate()}
-          disabled={createInvite.isPending}
-          className="rounded-xl font-bold"
-          data-testid="button-create-invite"
-        >
-          {createInvite.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
-          Generate Invite Link
-        </Button>
+        {atMemberCapacity && (
+          <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800" data-testid="alert-at-capacity">
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+            <p className="text-xs font-bold">You've reached your member limit. Upgrade your plan or remove a member to add someone new.</p>
+          </div>
+        )}
+
+        {showInviteForm && !atMemberCapacity && (
+          <div className="space-y-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
+            <h4 className="font-black text-slate-800 text-sm">Invite New Member</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600">Name (optional)</label>
+                <Input
+                  value={inviteName}
+                  onChange={e => setInviteName(e.target.value)}
+                  placeholder="e.g. Mom, Dad, Alex"
+                  className="rounded-xl h-10"
+                  data-testid="input-member-name"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600">Role</label>
+                <Select value={inviteRole} onValueChange={setInviteRole}>
+                  <SelectTrigger className="rounded-xl h-10" data-testid="select-member-role">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Adult">Adult (18+)</SelectItem>
+                    <SelectItem value="Teen">Teen (15–17)</SelectItem>
+                    <SelectItem value="Youth">Youth (13–14)</SelectItem>
+                    <SelectItem value="Child">Child (12 and under)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600">Link expires</label>
+                <Select value={expiresInDays} onValueChange={setExpiresInDays}>
+                  <SelectTrigger className="rounded-xl h-10" data-testid="select-invite-expiry">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 day</SelectItem>
+                    <SelectItem value="3">3 days</SelectItem>
+                    <SelectItem value="7">7 days</SelectItem>
+                    <SelectItem value="30">30 days</SelectItem>
+                    <SelectItem value="never">Never</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <p className="text-[10px] text-slate-400">
+              {inviteRole === "Adult" && "Adults have full privacy — personal diary, schedule, goals, and financial entries."}
+              {inviteRole === "Teen" && "Teens have high autonomy with limited financial visibility. Owner cannot read their diary or private chats."}
+              {inviteRole === "Youth" && "Youth members have moderate autonomy. Owner controls sharing, messaging, and financial access."}
+              {inviteRole === "Child" && "Children have a simplified, owner-controlled environment with limited access to features."}
+            </p>
+            <Button
+              onClick={() => createInvite.mutate()}
+              disabled={createInvite.isPending}
+              className="rounded-xl font-bold"
+              data-testid="button-generate-invite"
+            >
+              {createInvite.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Link2 className="w-4 h-4 mr-2" />}
+              Generate Invite Link
+            </Button>
+          </div>
+        )}
+
+        {membersLoading ? (
+          <p className="text-sm text-slate-400 py-4 text-center">Loading members...</p>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Current Members</p>
+            {(members as any[])?.map((member: any) => (
+              <div key={member.id} className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100" data-testid={`member-row-${member.id}`}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-600 shrink-0">
+                    {member.user?.firstName?.[0] || member.displayName?.[0] || "?"}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold truncate" data-testid={`text-member-name-${member.id}`}>
+                      {member.displayName || `${member.user?.firstName || ""} ${member.user?.lastName || ""}`.trim() || "Unknown"}
+                    </p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {roleIcon(member.role)}
+                      <Badge variant="outline" className={`text-[10px] px-1.5 py-0 rounded-md border ${roleColor(member.role)}`} data-testid={`badge-member-role-${member.id}`}>
+                        {member.role}
+                      </Badge>
+                      {member.dateOfBirth && (
+                        <span className="text-[10px] text-slate-400">
+                          {format(new Date(member.dateOfBirth), 'MMM yyyy')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {member.role !== "Owner" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemove(member)}
+                    className="text-red-400 hover:text-red-600 rounded-xl h-8 px-2 shrink-0"
+                    data-testid={`button-remove-member-${member.id}`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {activeInvites.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Active invites</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pending Invites</p>
             {activeInvites.map((inv: any) => (
               <div key={inv.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/50" data-testid={`invite-row-${inv.id}`}>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-bold truncate" data-testid={`text-invite-name-${inv.id}`}>
-                      {inv.displayName || "Unnamed invite"}
-                    </p>
-                    <Badge variant="outline" className="text-[10px] shrink-0" data-testid={`badge-invite-role-${inv.id}`}>
-                      {inv.role}
-                    </Badge>
+                    <p className="text-sm font-bold truncate">{inv.displayName || "Unnamed invite"}</p>
+                    <Badge variant="outline" className={`text-[10px] shrink-0 ${roleColor(inv.role)}`}>{inv.role}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {inv.expiresAt ? `Expires ${format(new Date(inv.expiresAt), 'MMM d')}` : "No expiration"}
                   </p>
                 </div>
                 <div className="flex gap-1.5 shrink-0 ml-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => copyLink(inv.token)}
-                    className="rounded-lg h-8"
-                    data-testid={`button-copy-invite-${inv.id}`}
-                  >
-                    <Copy className="w-3.5 h-3.5 mr-1" />
-                    Copy
+                  <Button variant="outline" size="sm" onClick={() => copyLink(inv.token)} className="rounded-lg h-8" data-testid={`button-copy-invite-${inv.id}`}>
+                    <Copy className="w-3.5 h-3.5 mr-1" /> Copy
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => revokeInvite.mutate(inv.id)}
-                    className="rounded-lg h-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                    data-testid={`button-revoke-invite-${inv.id}`}
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => revokeInvite.mutate(inv.id)} className="rounded-lg h-8 text-red-400 hover:text-red-600" data-testid={`button-revoke-invite-${inv.id}`}>
                     <X className="w-3.5 h-3.5" />
                   </Button>
                 </div>
@@ -474,14 +628,12 @@ function InviteManagement({ familyId }: { familyId: number }) {
           <div className="space-y-2">
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Past invites</p>
             {usedInvites.slice(0, 5).map((inv: any) => (
-              <div key={inv.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 opacity-60" data-testid={`invite-past-${inv.id}`}>
+              <div key={inv.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 opacity-60">
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{inv.displayName || "Unnamed"}</p>
                   <p className="text-xs text-muted-foreground">{inv.status === "used" ? "Accepted" : "Revoked"}</p>
                 </div>
-                <Badge variant={inv.status === "used" ? "default" : "destructive"} className="text-[10px]">
-                  {inv.status}
-                </Badge>
+                <Badge variant={inv.status === "used" ? "default" : "destructive"} className="text-[10px]">{inv.status}</Badge>
               </div>
             ))}
           </div>

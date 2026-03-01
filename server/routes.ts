@@ -147,6 +147,45 @@ export async function registerRoutes(
     res.json(members);
   });
 
+  app.delete('/api/family/members/:id', isAuthenticated, requireFamily, requireOwner, async (req: any, res) => {
+    try {
+      const memberId = Number(req.params.id);
+      const members = await storage.getFamilyMembers(req.family.id);
+      const member = members.find((m: any) => m.id === memberId);
+      if (!member) return res.status(404).json({ message: "Member not found" });
+      if (member.role === "Owner") return res.status(400).json({ message: "Cannot remove the family owner" });
+      await storage.removeFamilyMember(memberId, req.family.id);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to remove member" });
+    }
+  });
+
+  app.patch('/api/family/tier', isAuthenticated, requireFamily, requireOwner, async (req: any, res) => {
+    try {
+      const { tier } = req.body;
+      const { FAMILY_TIERS } = await import("@shared/schema");
+      if (!tier || !(tier in FAMILY_TIERS)) return res.status(400).json({ message: "Invalid tier" });
+      const tierConfig = FAMILY_TIERS[tier as keyof typeof FAMILY_TIERS];
+      const members = await storage.getFamilyMembers(req.family.id);
+      const caregiversList = await storage.getCaregivers(req.family.id);
+      const activeMembers = members.length;
+      const activeCaregivers = caregiversList.filter((c: any) => c.status !== "revoked").length;
+
+      if (activeMembers > tierConfig.maxMembers) {
+        return res.status(400).json({ message: `Cannot downgrade: you have ${activeMembers} members but ${tierConfig.label} allows ${tierConfig.maxMembers}. Remove members first.` });
+      }
+      if (activeCaregivers > tierConfig.maxCaregivers) {
+        return res.status(400).json({ message: `Cannot downgrade: you have ${activeCaregivers} caregivers but ${tierConfig.label} allows ${tierConfig.maxCaregivers}. Revoke caregivers first.` });
+      }
+
+      const updated = await storage.updateFamily(req.family.id, { tier } as any);
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update tier" });
+    }
+  });
+
   // Events
   app.get(api.events.list.path, isAuthenticated, requireFamily, async (req: any, res) => {
     const events = await storage.getEvents(req.family.id);
@@ -1314,8 +1353,35 @@ export async function registerRoutes(
       const existing = await storage.getFamilyForUser(userId);
       if (existing) return res.status(400).json({ message: "You are already part of a family" });
 
+      const { FAMILY_TIERS, ROLE_AGE_RULES, families: familiesTable } = await import("@shared/schema");
+      const { db } = await import("./db");
+      const { eq } = await import("drizzle-orm");
+      const [family] = await db.select().from(familiesTable).where(eq(familiesTable.id, invite.familyId));
+      const members = await storage.getFamilyMembers(invite.familyId);
+      const tier = (family as any)?.tier || "core";
+      const tierConfig = FAMILY_TIERS[tier as keyof typeof FAMILY_TIERS] || FAMILY_TIERS.core;
+      if (members.length >= tierConfig.maxMembers) {
+        return res.status(400).json({ message: `This family has reached its ${tierConfig.label} member limit (${tierConfig.maxMembers}). The family owner needs to upgrade their plan or remove a member.` });
+      }
+
       const { displayName, dateOfBirth } = req.body;
+
+      if (invite.role in ROLE_AGE_RULES && !dateOfBirth) {
+        return res.status(400).json({ message: "Date of birth is required to join this family." });
+      }
+
       const dob = dateOfBirth ? new Date(dateOfBirth) : undefined;
+
+      if (dob && invite.role in ROLE_AGE_RULES) {
+        const ageRules = ROLE_AGE_RULES[invite.role as keyof typeof ROLE_AGE_RULES];
+        const now = new Date();
+        let age = now.getFullYear() - dob.getFullYear();
+        const m = now.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+        if (age < ageRules.minAge || age > ageRules.maxAge) {
+          return res.status(400).json({ message: `Age doesn't match the ${ageRules.label} role. Your age (${age}) should be between ${ageRules.minAge} and ${ageRules.maxAge === 999 ? '18+' : ageRules.maxAge}.` });
+        }
+      }
 
       await storage.addFamilyMember(invite.familyId, userId, invite.role, displayName || invite.displayName, dob);
       await storage.useFamilyInvite(invite.token, userId);
@@ -1342,6 +1408,15 @@ export async function registerRoutes(
       const userId = req.user.claims.sub;
       const { caregiverUserId, displayName, accessType, expiresAt, assignedChildIds, permissions } = req.body;
       if (!caregiverUserId) return res.status(400).json({ message: "Caregiver user ID is required" });
+
+      const { FAMILY_TIERS } = await import("@shared/schema");
+      const tier = ((req.family as any).tier || "core") as keyof typeof FAMILY_TIERS;
+      const tierConfig = FAMILY_TIERS[tier] || FAMILY_TIERS.core;
+      const existingCaregivers = await storage.getCaregivers(req.family.id);
+      const activeCGs = existingCaregivers.filter((c: any) => c.status !== "revoked").length;
+      if (activeCGs >= tierConfig.maxCaregivers) {
+        return res.status(400).json({ message: `Your ${tierConfig.label} plan allows ${tierConfig.maxCaregivers} caregiver(s). Upgrade your plan or revoke an existing caregiver.` });
+      }
 
       const existing = await storage.getCaregiverByUserId(req.family.id, caregiverUserId);
       if (existing) return res.status(400).json({ message: "This user is already a caregiver for your family" });
