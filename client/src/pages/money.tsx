@@ -11,7 +11,7 @@ import { Plus, Receipt, TrendingUp, Wallet, Calendar as CalendarIcon, Target, Ar
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const CATEGORIES = ["Groceries", "Rent/Mortgage", "Utilities", "Subscriptions", "Gas", "Clothing", "Dining Out", "Entertainment", "School", "Other"];
+const CATEGORIES = ["Rent/Mortgage", "Utilities", "Subscriptions", "Gas", "Clothing", "Dining Out", "Entertainment", "School", "Other"];
 const COLORS = ['#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#8b5cf6', '#94a3b8', '#10b981', '#f43f5e', '#0ea5e9', '#64748b'];
 
 export default function Money() {
@@ -48,13 +48,9 @@ export default function Money() {
     .filter(e => isAfter(new Date(e.date), monthStart))
     .reduce((sum, e) => sum + Number(e.amount), 0);
 
+  // No longer tracking groceries here separately
   const totalSpent = expensesData.reduce((sum, exp) => sum + Number(exp.amount), 0);
   
-  // Grocery specific analytics
-  const grocerySpend = expensesData
-    .filter(e => e.category === "Groceries" || e.tag === "grocery")
-    .reduce((sum, e) => sum + Number(e.amount), 0);
-
   const aggregated = expensesData.reduce((acc, exp) => {
     acc[exp.category] = (acc[exp.category] || 0) + Number(exp.amount);
     return acc;
@@ -143,7 +139,6 @@ export default function Money() {
                   <Select value={expenseForm.tag} onValueChange={(val) => setExpenseForm({...expenseForm, tag: val})}>
                     <SelectTrigger className="rounded-xl"><SelectValue placeholder="Optional Tag" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="grocery">Grocery</SelectItem>
                       <SelectItem value="subscription">Subscription</SelectItem>
                       <SelectItem value="gas">Gas</SelectItem>
                       <SelectItem value="bill">Bill</SelectItem>
@@ -206,18 +201,7 @@ export default function Money() {
               <CardContent className="p-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Grocery Spend</p>
-                    <h3 className="text-2xl font-display font-bold mt-1">${grocerySpend.toFixed(2)}</h3>
-                  </div>
-                  <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500"><ArrowDownRight className="w-5 h-5" /></div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="rounded-2xl border-border/50 shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Transactions</p>
+                    <p className="text-sm font-medium text-muted-foreground">Transactions</p>
                     <h3 className="text-2xl font-display font-bold mt-1">{expensesData.length}</h3>
                   </div>
                   <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><Receipt className="w-5 h-5" /></div>
@@ -312,7 +296,7 @@ export default function Money() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border-border/50 shadow-sm bg-primary/5 border-primary/20">
+            <Card className="rounded-2xl border-border/50 shadow-sm bg-primary/5 border-primary/20">
                 <CardHeader className="p-4 pb-0">
                   <CardTitle className="text-sm font-display text-primary flex items-center gap-2">
                     <ArrowUpRight className="w-4 h-4" /> Financial Tip
@@ -320,7 +304,7 @@ export default function Money() {
                 </CardHeader>
                 <CardContent className="p-4 pt-2">
                   <p className="text-xs text-primary/80 leading-relaxed">
-                    Families who manually log their expenses typically save 15% more annually by identifying unused subscriptions and impulsive spending patterns.
+                    Families who track non-grocery spending separately often find hidden savings in recurring subscriptions and dining habits.
                   </p>
                 </CardContent>
               </Card>

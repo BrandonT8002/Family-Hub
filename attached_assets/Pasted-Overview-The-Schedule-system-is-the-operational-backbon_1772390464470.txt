@@ -1,0 +1,324 @@
+Overview
+
+The Schedule system is the operational backbone of the family.
+
+It is designed to:
+	•	Reduce forgotten events
+	•	Separate personal and shared life
+	•	Prevent oversharing
+	•	Support recurring responsibilities
+	•	Encourage accountability
+	•	Respect privacy
+	•	Integrate gently into daily routines
+
+It is not just a calendar.
+It is a structured family coordination system.
+
+⸻
+
+Core Philosophy
+
+The schedule should:
+	•	Feel calm, not chaotic
+	•	Feel intentional, not noisy
+	•	Respect personal boundaries
+	•	Encourage responsibility without pressure
+	•	Support both older adults and teenagers
+	•	Be flexible but structured
+
+The schedule is a coordination tool — not a surveillance tool.
+
+⸻
+
+Schedule Architecture
+
+1. Event Types
+
+Every event can be:
+	•	Personal (visible only to the creator)
+	•	Shared with Family
+	•	Shared with specific members (future phase)
+	•	Financial (lives in Money tab instead)
+
+Users decide visibility at creation.
+
+Privacy is default-respecting.
+
+⸻
+
+2. Event Creation
+
+When adding an event, users input:
+	•	Title
+	•	Date
+	•	Time
+	•	Recurrence type
+	•	Visibility (personal or shared)
+
+Optional:
+	•	Notes
+	•	Reminder timing (future phase)
+	•	Pre-leave checklist trigger
+	•	Location (future phase)
+
+The “Add Event” flow is simple and clean.
+
+⸻
+
+3. Recurrence System
+
+Supported recurrence options:
+	•	One time
+	•	Daily
+	•	Weekly
+	•	Monthly
+	•	Yearly
+
+Examples:
+	•	Dentist (one time)
+	•	Payday (weekly)
+	•	Rent (monthly)
+	•	Anniversary (yearly)
+	•	Workout reminder (daily)
+
+Recurring events generate future instances automatically.
+
+⸻
+
+4. Calendar Format (Planned Format)
+
+The schedule supports:
+	•	Month view
+	•	Week view
+	•	Day view (future phase)
+	•	Agenda list below calendar
+
+Users can:
+	•	Tap a day to view events
+	•	Switch between month and week
+	•	Scroll through future months
+
+Days with events display indicator dots.
+
+⸻
+
+5. Personal vs Family Separation
+
+Personal events:
+	•	Do not appear on family schedule
+	•	Are visible only to creator
+	•	Allow teen autonomy
+
+Family events:
+	•	Appear for all members
+	•	Can include recitals, school events, travel, holidays
+
+This separation prevents:
+	•	Oversharing
+	•	Unnecessary drama
+	•	Teen privacy conflict
+
+⸻
+
+6. Financial Schedule Separation
+
+Important financial events:
+	•	Rent
+	•	Netflix
+	•	Insurance
+	•	Payday
+
+Do NOT clutter the family calendar.
+
+They live inside the Money tab.
+
+They are tracked separately but can optionally appear as reminders.
+
+⸻
+
+7. Morning “Walk Out” Feature
+
+Optional feature:
+
+When user opens the app in the morning:
+
+Instead of:
+“What time are you leaving?”
+
+It asks softly:
+
+“What time are you planning on walking out today?”
+
+If set:
+	•	Triggers a pre-leave checklist
+	•	Optional reminder shortly before leaving
+	•	Encourages punctuality without alarm-clock aggression
+
+Checklist examples:
+	•	Keys
+	•	Wallet
+	•	ID
+	•	Insurance card (for doctor visit)
+	•	School bag
+
+This feature is optional.
+
+⸻
+
+8. Gentle Reminder System
+
+Notifications are:
+	•	Respectful
+	•	Functional
+	•	Not addictive
+	•	Not spammy
+
+No “Come back to app” nudges.
+
+Only event-related reminders.
+
+Users can:
+	•	Choose notification style
+	•	Enable stronger alerts if needed
+	•	Disable if preferred
+
+⸻
+
+9. Ownership & Permissions
+
+Owner controls:
+	•	Who can create shared events
+	•	Who can delete events
+	•	Who can see family schedule
+	•	Under-18 sharing permissions
+
+12 and under:
+	•	No independent email required
+	•	Parent-controlled
+	•	Limited schedule permissions
+
+13–14:
+	•	Limited independence
+	•	Email integration allowed with approval
+
+15–17:
+	•	Near-adult permissions
+	•	Personal events respected
+
+Adults:
+	•	Full personal privacy
+	•	Owner cannot read private schedules unless shared
+
+⸻
+
+10. Caregiver Mode (Limited Access)
+
+Optional caregiver:
+	•	Can see assigned schedule items
+	•	Cannot view private personal events
+	•	Cannot view financial data
+	•	Cannot see diary entries
+
+Caregivers are limited in number.
+
+⸻
+
+11. Conflict Protection
+
+If someone blocks another:
+	•	24-hour cooldown before unblocking
+	•	Extra confirmation prompt before blocking
+
+Schedule access is not automatically removed by blocking chat.
+
+⸻
+
+12. Event Notes
+
+Each event can include notes.
+
+Notes can be:
+	•	Visible to everyone
+	•	Visible to creator only
+	•	Visible to specific people (future phase)
+
+Notes help clarify:
+	•	Bring insurance card
+	•	Dress rehearsal outfit required
+	•	Arrive 15 minutes early
+
+⸻
+
+13. Shared View Sync (Parent + Student)
+
+Academic events:
+	•	Can be built by parent
+	•	Can be built by student
+	•	Can be shared
+
+Students can:
+	•	Build independent schedule
+	•	Choose what to share
+
+Parents can:
+	•	Monitor academics without micromanaging
+
+⸻
+
+14. Yearly Snapshots
+
+Over time, schedule history can support:
+	•	Annual review
+	•	Event frequency tracking
+	•	Habit consistency
+	•	Milestone recognition
+
+Example:
+	•	“You attended 42 workouts this year.”
+	•	“You saved 10 recurring late arrivals.”
+
+⸻
+
+15. Emotional Design
+
+The Schedule tab should feel:
+	•	Clean
+	•	Organized
+	•	Mature
+	•	Empowering
+	•	Respectful
+
+Not:
+	•	Cluttered
+	•	Loud
+	•	Controlling
+	•	Chaotic
+
+⸻
+
+What Makes This Schedule Different
+
+Unlike default phone calendars:
+	•	Built around family dynamics
+	•	Built around permission layers
+	•	Built around financial separation
+	•	Built around teen autonomy
+	•	Built around long-term retention
+	•	Built around daily check-in flow
+
+This is not a generic calendar.
+
+It is a structured household coordination engine.
+
+⸻
+
+Long-Term Retention Value
+
+If this schedule disappeared, families would feel:
+	•	Disconnected
+	•	Forgetful
+	•	Less aligned
+	•	More stressed
+	•	Less aware of commitments
+
+It becomes a backbone feature — not just a tool.

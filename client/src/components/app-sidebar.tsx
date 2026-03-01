@@ -29,8 +29,9 @@ const navItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Schedule", url: "/schedule", icon: CalendarDays },
   { title: "Money", url: "/money", icon: Wallet },
-  { title: "Groceries", url: "/groceries", icon: ShoppingCart },
-  { title: "Family Chat", url: "/chat", icon: MessageSquare },
+  { title: "Shopping", url: "/groceries", icon: ShoppingCart },
+  { title: "Shopping", url: "/groceries", icon: ShoppingCart },
+  { title: "Chat", url: "/chat", icon: MessageSquare },
 ];
 
 export function AppSidebar() {

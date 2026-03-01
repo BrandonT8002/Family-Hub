@@ -35,8 +35,8 @@ export default function Groceries() {
     <div className="space-y-8 max-w-5xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-4xl font-display font-bold tracking-tight">Shopping Lists</h1>
-          <p className="text-muted-foreground mt-2 text-lg">Stay organized and shop efficiently together.</p>
+          <h1 className="text-4xl font-display font-bold tracking-tight">Shopping</h1>
+          <p className="text-muted-foreground mt-2 text-lg">Lists for everything your family needs.</p>
         </div>
         
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

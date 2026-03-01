@@ -71,6 +71,25 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
+        {/* Shopping Snapshot */}
+        <Card className="rounded-[2.5rem] border-white/80 shadow-xl bg-white/90 backdrop-blur-xl transition-all hover:shadow-2xl hover:-translate-y-1">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-orange-600 font-black uppercase tracking-widest text-[11px]">Shopping Lists</CardDescription>
+            <CardTitle className="text-4xl font-display font-black text-slate-900">Lists</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2 text-sm text-orange-600 font-black mb-6">
+              <ShoppingCart className="w-5 h-5" />
+              <span>Stay Organized Together</span>
+            </div>
+            <Link href="/groceries">
+              <Button variant="default" className="w-full rounded-2xl h-12 bg-orange-500 text-white font-black shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all border-none">
+                Open Shopping
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Schedule Snapshot */}
         <Card className="rounded-[2.5rem] border-white/80 shadow-xl bg-white/90 backdrop-blur-xl transition-all hover:shadow-2xl hover:-translate-y-1">
           <CardHeader className="pb-2">
@@ -80,7 +99,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-3 mb-6">
               {todayEvents.length > 0 ? (
-                todayEvents.slice(0, 2).map(event => (
+                todayEvents.slice(0, 1).map(event => (
                   <div key={event.id} className="flex items-center gap-3 text-sm truncate bg-slate-50 p-3 rounded-2xl border-2 border-white shadow-sm">
                     <div className="bg-primary/20 p-1.5 rounded-lg">
                       <Clock className="w-4 h-4 text-primary" />
@@ -102,34 +121,9 @@ export default function Dashboard() {
             </Link>
           </CardContent>
         </Card>
-
-        {/* Quick Actions */}
-        <Card className="rounded-[2.5rem] border-white/80 shadow-xl bg-white/90 backdrop-blur-xl transition-all hover:shadow-2xl hover:-translate-y-1">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-2xl font-display font-black text-slate-900">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-3">
-            <Link href="/money">
-              <Button variant="outline" className="w-full rounded-2xl justify-start gap-3 h-14 bg-white border-2 border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all shadow-sm font-black group">
-                <div className="bg-primary/10 group-hover:bg-white/20 p-2 rounded-xl">
-                  <Receipt className="w-5 h-5 text-primary group-hover:text-white" />
-                </div>
-                Log New Expense
-              </Button>
-            </Link>
-            <Link href="/groceries">
-              <Button variant="outline" className="w-full rounded-2xl justify-start gap-3 h-14 bg-white border-2 border-orange-200 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all shadow-sm font-black group">
-                <div className="bg-orange-100 group-hover:bg-white/20 p-2 rounded-xl">
-                  <ShoppingCart className="w-5 h-5 text-orange-600 group-hover:text-white" />
-                </div>
-                Open Groceries
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
         {/* Upcoming Obligations */}
         <section className="space-y-4">
           <h2 className="text-xl font-display font-bold flex items-center gap-2">
