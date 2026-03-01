@@ -23,7 +23,8 @@ const DEFAULT_THEME = {
   groceries: "#ffd9b3",
   chat: "#b3ffcc",
   diary: "#f5e6d3",
-  goals: "#d4edda"
+  goals: "#d4edda",
+  wishlists: "#fce4ec"
 };
 
 const THEME_PRESETS = [
@@ -40,7 +41,8 @@ const THEME_PRESETS = [
       groceries: "#f59e0b",
       chat: "#10b981",
       diary: "#d97706",
-      goals: "#22c55e"
+      goals: "#22c55e",
+      wishlists: "#ec4899"
     }
   },
   {
@@ -52,7 +54,8 @@ const THEME_PRESETS = [
       groceries: "#cbd5e1",
       chat: "#94a3b8",
       diary: "#e2d8cd",
-      goals: "#d1e7dd"
+      goals: "#d1e7dd",
+      wishlists: "#fce4ec"
     }
   },
   {
@@ -64,7 +67,8 @@ const THEME_PRESETS = [
       groceries: "#d1d5db",
       chat: "#9ca3af",
       diary: "#e5e7eb",
-      goals: "#d1d5db"
+      goals: "#d1d5db",
+      wishlists: "#e5e7eb"
     }
   },
   {
@@ -76,7 +80,8 @@ const THEME_PRESETS = [
       groceries: "#64748b",
       chat: "#94a3b8",
       diary: "#78716c",
-      goals: "#3d5a45"
+      goals: "#3d5a45",
+      wishlists: "#5a3d50"
     }
   }
 ];

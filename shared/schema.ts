@@ -129,6 +129,7 @@ export const groceryLists = pgTable("grocery_lists", {
   creatorId: text("creator_id").references(() => users.id),
   name: text("name").notNull(),
   type: text("type").default("Needs"),
+  listCategory: text("list_category").default("Groceries"),
   storeName: text("store_name"),
   isPrivate: boolean("is_private").default(false),
 });
@@ -142,6 +143,34 @@ export const groceryItems = pgTable("grocery_items", {
   isChecked: boolean("is_checked").default(false),
   notes: text("notes"),
   assignedTo: text("assigned_to").references(() => users.id),
+});
+
+export const wishlists = pgTable("wishlists", {
+  id: serial("id").primaryKey(),
+  familyId: integer("family_id").references(() => families.id).notNull(),
+  creatorId: text("creator_id").references(() => users.id).notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  visibility: text("visibility").notNull().default("family"),
+  hideClaimedBy: boolean("hide_claimed_by").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const wishlistItems = pgTable("wishlist_items", {
+  id: serial("id").primaryKey(),
+  wishlistId: integer("wishlist_id").references(() => wishlists.id).notNull(),
+  name: text("name").notNull(),
+  category: text("category"),
+  estimatedPrice: numeric("estimated_price"),
+  storeName: text("store_name"),
+  storeLink: text("store_link"),
+  notes: text("notes"),
+  priority: text("priority").default("medium"),
+  wantOrNeed: text("want_or_need").default("want"),
+  status: text("status").default("unclaimed"),
+  claimedBy: text("claimed_by").references(() => users.id),
+  claimedNote: text("claimed_note"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const conversations = pgTable("conversations", {
@@ -228,6 +257,14 @@ export type GroceryList = typeof groceryLists.$inferSelect;
 export const insertGroceryItemSchema = createInsertSchema(groceryItems).omit({ id: true });
 export type InsertGroceryItem = z.infer<typeof insertGroceryItemSchema>;
 export type GroceryItem = typeof groceryItems.$inferSelect;
+
+export const insertWishlistSchema = createInsertSchema(wishlists).omit({ id: true, createdAt: true });
+export type InsertWishlist = z.infer<typeof insertWishlistSchema>;
+export type Wishlist = typeof wishlists.$inferSelect;
+
+export const insertWishlistItemSchema = createInsertSchema(wishlistItems).omit({ id: true, createdAt: true });
+export type InsertWishlistItem = z.infer<typeof insertWishlistItemSchema>;
+export type WishlistItem = typeof wishlistItems.$inferSelect;
 
 export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({ id: true, createdAt: true, isDeleted: true });
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;

@@ -7,6 +7,7 @@ import {
   MessageSquare, 
   BookOpen,
   Target,
+  Heart,
   LogOut,
   Settings
 } from "lucide-react";
@@ -36,6 +37,7 @@ const navItems = [
   { title: "Chat", url: "/chat", icon: MessageSquare },
   { title: "Diary", url: "/diary", icon: BookOpen },
   { title: "Goals", url: "/goals", icon: Target },
+  { title: "Wishlists", url: "/wishlists", icon: Heart },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

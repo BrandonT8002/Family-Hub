@@ -314,6 +314,7 @@ export async function registerRoutes(
         familyId: req.family.id,
         creatorId: userId,
         storeName: (req.body as any).storeName || null,
+        listCategory: (req.body as any).listCategory || "Groceries",
         type: input.type || "Needs",
         isPrivate: (req.body as any).isPrivate || false,
       });
@@ -879,6 +880,170 @@ export async function registerRoutes(
       const userId = req.user.claims.sub;
       if (item.visibility === "personal" && item.creatorId !== userId) return res.status(403).json({ message: "Access denied" });
       await storage.deleteGoalItem(item.itemId);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to delete item" });
+    }
+  });
+
+  // ── Wishlists ──
+
+  app.get('/api/wishlists', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const all = await storage.getWishlists(req.family.id);
+      const visible = all.filter((w: any) => {
+        if (w.visibility === "family") return true;
+        if (w.creatorId === userId) return true;
+        return false;
+      });
+      res.json(visible);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch wishlists" });
+    }
+  });
+
+  app.post('/api/wishlists', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { name, description, visibility, hideClaimedBy } = req.body;
+      if (!name) return res.status(400).json({ message: "Name is required" });
+      const wl = await storage.createWishlist({
+        familyId: req.family.id,
+        creatorId: userId,
+        name,
+        description: description || null,
+        visibility: visibility || "family",
+        hideClaimedBy: hideClaimedBy !== false,
+      });
+      res.json(wl);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to create wishlist" });
+    }
+  });
+
+  app.patch('/api/wishlists/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const wl = await storage.getWishlist(Number(req.params.id));
+      if (!wl || wl.familyId !== req.family.id) return res.status(404).json({ message: "Not found" });
+      if (wl.creatorId !== userId) return res.status(403).json({ message: "Access denied" });
+      const updated = await storage.updateWishlist(wl.id, req.family.id, req.body);
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update wishlist" });
+    }
+  });
+
+  app.delete('/api/wishlists/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const wl = await storage.getWishlist(Number(req.params.id));
+      if (!wl || wl.familyId !== req.family.id) return res.status(404).json({ message: "Not found" });
+      if (wl.creatorId !== userId) return res.status(403).json({ message: "Access denied" });
+      await storage.deleteWishlist(wl.id, req.family.id);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to delete wishlist" });
+    }
+  });
+
+  app.get('/api/wishlists/:id/items', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const wl = await storage.getWishlist(Number(req.params.id));
+      if (!wl || wl.familyId !== req.family.id) return res.status(404).json({ message: "Not found" });
+      if (wl.visibility === "private" && wl.creatorId !== userId) return res.status(403).json({ message: "Access denied" });
+      const items = await storage.getWishlistItems(wl.id);
+      const isOwner = wl.creatorId === userId;
+      const safeItems = items.map((item: any) => ({
+        ...item,
+        claimedBy: (wl.hideClaimedBy && isOwner) ? null : item.claimedBy,
+        claimedNote: (wl.hideClaimedBy && isOwner) ? null : item.claimedNote,
+      }));
+      res.json(safeItems);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch items" });
+    }
+  });
+
+  app.post('/api/wishlists/:id/items', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const wl = await storage.getWishlist(Number(req.params.id));
+      if (!wl || wl.familyId !== req.family.id) return res.status(404).json({ message: "Not found" });
+      if (wl.creatorId !== userId) return res.status(403).json({ message: "Only the list owner can add items" });
+      const { name, category, estimatedPrice, storeName, storeLink, notes, priority, wantOrNeed } = req.body;
+      if (!name) return res.status(400).json({ message: "Name is required" });
+      const item = await storage.createWishlistItem({
+        wishlistId: wl.id,
+        name,
+        category: category || null,
+        estimatedPrice: estimatedPrice || null,
+        storeName: storeName || null,
+        storeLink: storeLink || null,
+        notes: notes || null,
+        priority: priority || "medium",
+        wantOrNeed: wantOrNeed || "want",
+      });
+      res.json(item);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to create item" });
+    }
+  });
+
+  app.patch('/api/wishlists/items/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const itemInfo = await storage.getWishlistItemWithWishlist(Number(req.params.id));
+      if (!itemInfo || itemInfo.familyId !== req.family.id) return res.status(404).json({ message: "Item not found" });
+      if (itemInfo.visibility === "private" && itemInfo.creatorId !== userId) return res.status(403).json({ message: "Access denied" });
+
+      const isOwner = itemInfo.creatorId === userId;
+      const { status, claimedBy, claimedNote, ...otherFields } = req.body;
+
+      if (isOwner) {
+        const safeData: any = {};
+        if (otherFields.name !== undefined) safeData.name = otherFields.name;
+        if (otherFields.category !== undefined) safeData.category = otherFields.category;
+        if (otherFields.estimatedPrice !== undefined) safeData.estimatedPrice = otherFields.estimatedPrice;
+        if (otherFields.storeName !== undefined) safeData.storeName = otherFields.storeName;
+        if (otherFields.storeLink !== undefined) safeData.storeLink = otherFields.storeLink;
+        if (otherFields.notes !== undefined) safeData.notes = otherFields.notes;
+        if (otherFields.priority !== undefined) safeData.priority = otherFields.priority;
+        if (otherFields.wantOrNeed !== undefined) safeData.wantOrNeed = otherFields.wantOrNeed;
+        const updated = await storage.updateWishlistItem(Number(req.params.id), safeData);
+        return res.json(updated);
+      }
+
+      const claimData: any = {};
+      if (status === "claimed") {
+        claimData.status = "claimed";
+        claimData.claimedBy = userId;
+        if (claimedNote) claimData.claimedNote = claimedNote;
+      } else if (status === "unclaimed" && itemInfo.claimedBy === userId) {
+        claimData.status = "unclaimed";
+        claimData.claimedBy = null;
+        claimData.claimedNote = null;
+      } else if (status === "purchased" && itemInfo.claimedBy === userId) {
+        claimData.status = "purchased";
+      } else {
+        return res.status(403).json({ message: "You can only claim/unclaim/purchase items" });
+      }
+      const updated = await storage.updateWishlistItem(Number(req.params.id), claimData);
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to update item" });
+    }
+  });
+
+  app.delete('/api/wishlists/items/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const itemInfo = await storage.getWishlistItemWithWishlist(Number(req.params.id));
+      if (!itemInfo || itemInfo.familyId !== req.family.id) return res.status(404).json({ message: "Item not found" });
+      if (itemInfo.creatorId !== userId) return res.status(403).json({ message: "Only the list owner can delete items" });
+      await storage.deleteWishlistItem(Number(req.params.id));
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ message: "Failed to delete item" });

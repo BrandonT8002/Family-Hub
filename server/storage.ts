@@ -2,7 +2,7 @@ import { db } from "./db";
 import {
   families, familyMembers, events, expenses, groceryLists, groceryItems, chatMessages, users,
   financialSchedule, savingsGoals, conversations, conversationParticipants, blocks,
-  diaryEntries, diarySettings, goals, goalItems, goalCategories,
+  diaryEntries, diarySettings, goals, goalItems, goalCategories, wishlists, wishlistItems,
   type InsertFamily, type InsertEvent, type InsertExpense, type InsertGroceryList, type InsertGroceryItem, type InsertChatMessage, type InsertDiaryEntry
 } from "@shared/schema";
 import { eq, desc, and, or, ne, inArray, isNull, asc } from "drizzle-orm";
@@ -69,6 +69,17 @@ export interface IStorage {
   updateGoalItem(id: number, data: any): Promise<typeof goalItems.$inferSelect>;
   deleteGoalItem(id: number): Promise<void>;
   getGoalItemWithGoal(itemId: number): Promise<{ itemId: number; goalId: number; familyId: number; visibility: string; creatorId: string } | null>;
+
+  getWishlists(familyId: number): Promise<(typeof wishlists.$inferSelect)[]>;
+  getWishlist(id: number): Promise<typeof wishlists.$inferSelect | undefined>;
+  createWishlist(data: any): Promise<typeof wishlists.$inferSelect>;
+  updateWishlist(id: number, familyId: number, data: any): Promise<typeof wishlists.$inferSelect>;
+  deleteWishlist(id: number, familyId: number): Promise<void>;
+
+  getWishlistItems(wishlistId: number): Promise<(typeof wishlistItems.$inferSelect)[]>;
+  createWishlistItem(data: any): Promise<typeof wishlistItems.$inferSelect>;
+  updateWishlistItem(id: number, data: any): Promise<typeof wishlistItems.$inferSelect>;
+  deleteWishlistItem(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -578,6 +589,65 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(goals, eq(goalItems.goalId, goals.id))
       .where(eq(goalItems.id, itemId));
     return row || null;
+  }
+
+  async getWishlists(familyId: number) {
+    return db.select().from(wishlists).where(eq(wishlists.familyId, familyId)).orderBy(desc(wishlists.createdAt));
+  }
+
+  async getWishlist(id: number) {
+    const [wl] = await db.select().from(wishlists).where(eq(wishlists.id, id));
+    return wl;
+  }
+
+  async createWishlist(data: any) {
+    const [wl] = await db.insert(wishlists).values(data).returning();
+    return wl;
+  }
+
+  async updateWishlist(id: number, familyId: number, data: any) {
+    const [updated] = await db.update(wishlists).set(data).where(and(eq(wishlists.id, id), eq(wishlists.familyId, familyId))).returning();
+    return updated;
+  }
+
+  async deleteWishlist(id: number, familyId: number) {
+    await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, id));
+    await db.delete(wishlists).where(and(eq(wishlists.id, id), eq(wishlists.familyId, familyId)));
+  }
+
+  async getWishlistItems(wishlistId: number) {
+    return db.select().from(wishlistItems).where(eq(wishlistItems.wishlistId, wishlistId)).orderBy(desc(wishlistItems.createdAt));
+  }
+
+  async createWishlistItem(data: any) {
+    const [item] = await db.insert(wishlistItems).values(data).returning();
+    return item;
+  }
+
+  async updateWishlistItem(id: number, data: any) {
+    const [updated] = await db.update(wishlistItems).set(data).where(eq(wishlistItems.id, id)).returning();
+    return updated;
+  }
+
+  async getWishlistItemWithWishlist(itemId: number) {
+    const [row] = await db
+      .select({
+        itemId: wishlistItems.id,
+        wishlistId: wishlistItems.wishlistId,
+        claimedBy: wishlistItems.claimedBy,
+        status: wishlistItems.status,
+        familyId: wishlists.familyId,
+        visibility: wishlists.visibility,
+        creatorId: wishlists.creatorId,
+      })
+      .from(wishlistItems)
+      .innerJoin(wishlists, eq(wishlistItems.wishlistId, wishlists.id))
+      .where(eq(wishlistItems.id, itemId));
+    return row || null;
+  }
+
+  async deleteWishlistItem(id: number) {
+    await db.delete(wishlistItems).where(eq(wishlistItems.id, id));
   }
 }
 

@@ -11,9 +11,9 @@ A premium family productivity "operating system" web app.
 ## Project Structure
 ```
 client/src/
-  pages/        - Dashboard, Schedule, Money, Groceries, GroceryListDetail, Chat, Diary, Goals, Settings
+  pages/        - Dashboard, Schedule, Money, Groceries, GroceryListDetail, Chat, Diary, Goals, Wishlists, Settings
   components/   - Layout, AppSidebar, UI components (shadcn)
-  hooks/        - use-auth, use-family, use-chat, use-expenses, use-diary, use-goals
+  hooks/        - use-auth, use-family, use-chat, use-expenses, use-diary, use-goals, use-wishlists
   lib/          - queryClient
 shared/
   schema.ts     - Drizzle schema (all tables)
@@ -37,7 +37,9 @@ server/
 - **goal_categories** - User-created goal categories (name, icon, color)
 - **goals** - Goal tracking (title, description, categoryId, type [short/long-term], progressType [checklist/numeric/streak/milestone], visibility [personal/family], status [active/completed/archived], targetValue, currentValue, unit, dueDate, streak, bestStreak, lastStreakDate, linkedSavingsGoalId)
 - **goal_items** - Checklist/milestone items for goals (title, isCompleted, sortOrder)
-- **grocery_lists** - Shopping lists (with creatorId, isPrivate for sharing control)
+- **wishlists** - Wishlist lists (name, description, visibility [family/private], hideClaimedBy for gift surprises, creatorId)
+- **wishlist_items** - Wishlist items (name, category, estimatedPrice, storeName, storeLink, notes, priority, wantOrNeed, status [unclaimed/claimed/purchased], claimedBy)
+- **grocery_lists** - Shopping lists (with creatorId, isPrivate, listCategory for categorization)
 - **grocery_items** - Items in lists
 - **conversations** - Chat conversations (group/dm), with status (active/pending for message requests)
 - **conversation_participants** - Users in each conversation
@@ -50,11 +52,12 @@ server/
 - **Dashboard**: Overview of events, expenses, savings
 - **Schedule**: Calendar with recurring events, personal/shared
 - **Money**: Bill-centric management with bill types (housing, utility, subscription, insurance, transportation, education, internet, shopping), recurring/one-time tracking, due date mapping with overdue/due-soon alerts, annual cost projections per bill and by type, paid/unpaid toggle, auto-pay flag, edit/delete bills, expense logging, savings goals; bills appear on Schedule calendar
-- **Groceries**: Shopping lists with Wants/Needs categorization, private/shared toggle per list
+- **Groceries/Shopping**: Shopping lists with Wants/Needs categorization, private/shared toggle per list, list categories (Groceries, Household, School Supplies, Home Improvement, Baby & Kids, Pet Supplies, Health & Pharmacy, Electronics, General, Other), category filtering
+- **Wishlists**: Personal and family wishlists with gift surprise support (hideClaimedBy), item claiming by family members, purchased tracking, item categories, estimated prices, store links, priority levels, want/need classification, visibility (family/private), creator-only item management
 - **Chat**: Family group chat + private DMs with message request system, blocking, message deletion, media messages (photos, videos, voice notes via file upload + MediaRecorder API)
 - **Diary**: Protected private reflection space — PIN lock, mood tracking (10 moods), tags, photo attachments, privacy per entry, search/filter, mood insights with distribution charts, soft-delete with 30-day trash, diary settings (PIN, weekly reflection prompt)
 - **Goals**: Comprehensive goal tracking with user-created categories (starter pack available), short-term and long-term goals, 4 progress types (checklist, numeric, streak/consistency, milestones), personal/family visibility, active/completed/archived status, due date tracking with overdue alerts, filtering by type/category, sorting by due date/recently updated, streak tracking with daily check-in and best streak counter
-- **Settings**: Theme presets (Pastel, Colorful, Basic, Monochrome, Deep Night), font selection, per-module color customization (includes diary and goals)
+- **Settings**: Theme presets (Pastel, Colorful, Basic, Monochrome, Deep Night), font selection, per-module color customization (includes diary, goals, wishlists)
 
 ## Privacy Architecture
 - Role-based: Owner, Adult, Teen, Youth, Child, Caregiver

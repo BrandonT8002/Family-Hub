@@ -1,0 +1,212 @@
+FAMILYHUB — “LEAVE TIME” SYSTEM (Updated & Expanded)
+
+Core Purpose
+
+The Leave Time feature is:
+
+• An intention-setting tool
+• A routine anchor
+• A punctuality assistant
+• A pre-departure checklist trigger
+
+It is not an alarm clock.
+It does not control the user.
+It supports structure.
+
+The tone remains calm and respectful at all times.
+
+⸻
+
+1. When Leave Time Can Be Set
+
+Users can set their leave time:
+
+A) The Night Before
+
+While reviewing tomorrow’s schedule:
+	•	“Set tomorrow’s walk-out time?”
+
+This encourages preparation.
+
+B) Daily Default Time
+
+Users can create a recurring default:
+
+Examples:
+	•	Monday–Friday: 7:45 AM
+	•	Saturday: 9:30 AM
+	•	Sunday: No leave time
+
+C) Same Time Every Day
+
+Simple recurring setting:
+	•	“Use this every day.”
+
+D) Morning-of (Optional Prompt)
+
+If no time is set:
+App gently asks:
+
+“What time are you planning on walking out today?”
+
+This only appears once.
+
+⸻
+
+2. User Control Levels
+
+Users can:
+
+• Set once for tomorrow
+• Set weekly recurring
+• Set custom days
+• Skip today
+• Disable feature entirely
+• Override recurring time for one day
+
+Example:
+Default: 7:45 AM
+Tomorrow dentist → override to 8:30 AM
+
+Flexible but structured.
+
+⸻
+
+3. Trigger Logic (Updated)
+
+The system works in this order:
+	1.	Check if recurring leave time exists.
+	2.	Check if tomorrow has events.
+	3.	If none set → optionally prompt.
+	4.	Trigger pre-leave checklist before leave time.
+
+This avoids repeated prompts.
+
+⸻
+
+4. Pre-Leave Checklist (Smart & Manual)
+
+Triggered 5–15 minutes before departure.
+
+Checklist can include:
+
+• Keys
+• Wallet
+• Phone
+• ID
+• Insurance card
+• Lunch
+• Homework
+• Work bag
+• Gym clothes
+• Medication
+
+Users can:
+
+• Create default checklist
+• Create event-specific checklist
+• Save templates
+
+Example:
+Doctor template auto-suggests:
+	•	Insurance card
+	•	ID
+	•	Copay
+
+Feature can be fully disabled.
+
+⸻
+
+5. Reminder Tone (Always Kind)
+
+Never:
+“You’re late.”
+“Time to go.”
+“Hurry up.”
+
+Instead:
+“It’s almost time to head out.”
+“Quick check before you go?”
+“Ready to walk out?”
+
+If user is behind:
+“Want to adjust tomorrow’s walk-out time?”
+
+No shame mechanics.
+
+⸻
+
+6. Dashboard Integration
+
+If Leave Time is set:
+
+The dashboard can show:
+
+“Walking out at 7:45 AM.”
+
+Optional:
+• Countdown indicator
+• Today’s first event
+• Weather (future)
+• Traffic (future phase)
+• Sports scores (optional)
+• News (optional)
+
+Users choose what shows first.
+
+⸻
+
+7. Schedule Integration
+
+Leave Time connects to:
+
+• First event of day
+• School schedules
+• Work schedules
+• Appointments
+• Recurring routines
+
+If user has no events:
+Leave Time still functions as routine anchor.
+
+⸻
+
+8. Family Visibility (Optional)
+
+Leave Time can be:
+
+• Private
+• Shared with family
+• Visible to parent (minor accounts only if allowed)
+
+No forced tracking.
+No automatic location sharing.
+
+⸻
+
+9. Teen Consideration
+
+For 15–17:
+
+• Leave Time is private by default
+• Can share if they choose
+• Owner cannot override without permission
+
+This respects transition into adulthood.
+
+⸻
+
+10. Retention & Habit Impact
+
+This feature:
+
+• Encourages preparation
+• Reduces rushed mornings
+• Prevents forgotten items
+• Builds discipline
+• Feels empowering
+
+If removed:
+Users would feel less structured.
+
+This is a daily anchor feature.

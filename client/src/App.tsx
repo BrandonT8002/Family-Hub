@@ -15,6 +15,7 @@ import GroceryListDetail from "@/pages/grocery-list-detail";
 import Chat from "@/pages/chat";
 import Diary from "@/pages/diary";
 import Goals from "@/pages/goals";
+import Wishlists from "@/pages/wishlists";
 import Settings from "@/pages/settings";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/chat" component={Chat}/>
         <Route path="/diary" component={Diary}/>
         <Route path="/goals" component={Goals}/>
+        <Route path="/wishlists" component={Wishlists}/>
         <Route path="/settings" component={Settings}/>
         <Route component={NotFound} />
       </Switch>

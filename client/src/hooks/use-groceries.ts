@@ -16,7 +16,7 @@ export function useGroceryLists() {
 export function useCreateGroceryList() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { name: string; type?: string; storeName?: string; isPrivate?: boolean }) => {
+    mutationFn: async (data: { name: string; type?: string; listCategory?: string; storeName?: string; isPrivate?: boolean }) => {
       const res = await apiRequest("POST", api.groceryLists.create.path, data);
       return api.groceryLists.create.responses[201].parse(await res.json());
     },
