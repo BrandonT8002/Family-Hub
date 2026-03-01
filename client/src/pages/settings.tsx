@@ -17,76 +17,111 @@ const FONTS = [
 ];
 
 const DEFAULT_THEME = {
-  home: "#b3d9ff",
-  schedule: "#e0b3ff",
-  money: "#ffb3c1",
-  groceries: "#ffd9b3",
-  chat: "#b3ffcc",
-  diary: "#f5e6d3",
-  goals: "#d4edda",
-  wishlists: "#fce4ec",
-  leaveTime: "#e8f5e9"
+  home: "#f0f4f8",
+  schedule: "#f3f0f8",
+  money: "#f8f0f0",
+  groceries: "#f5f3ee",
+  chat: "#eef5f2",
+  diary: "#f7f3ee",
+  goals: "#eef4f0",
+  wishlists: "#f6f0f4",
+  leaveTime: "#f0f5f2"
 };
 
 const THEME_PRESETS = [
   {
-    name: "Pastel",
+    name: "Soft Cloud",
+    description: "Whisper-light tints",
     colors: DEFAULT_THEME
   },
   {
-    name: "Colorful",
+    name: "Warm Sand",
+    description: "Cozy earth tones",
     colors: {
-      home: "#3b82f6",
-      schedule: "#8b5cf6",
-      money: "#ef4444",
-      groceries: "#f59e0b",
-      chat: "#10b981",
-      diary: "#d97706",
-      goals: "#22c55e",
-      wishlists: "#ec4899",
-      leaveTime: "#059669"
+      home: "#f5f0e8",
+      schedule: "#f0ebe3",
+      money: "#f3ece4",
+      groceries: "#efe8de",
+      chat: "#eee9e0",
+      diary: "#f2ebe1",
+      goals: "#edeae2",
+      wishlists: "#f4ede5",
+      leaveTime: "#f0ebe3"
     }
   },
   {
-    name: "Basic",
+    name: "Ocean Mist",
+    description: "Cool, calm waters",
     colors: {
-      home: "#f8fafc",
-      schedule: "#f1f5f9",
-      money: "#e2e8f0",
-      groceries: "#cbd5e1",
-      chat: "#94a3b8",
-      diary: "#e2d8cd",
-      goals: "#d1e7dd",
-      wishlists: "#fce4ec",
-      leaveTime: "#e8f5e9"
+      home: "#edf2f7",
+      schedule: "#e8eef6",
+      money: "#eef0f5",
+      groceries: "#e9eff5",
+      chat: "#e6eef4",
+      diary: "#eef1f6",
+      goals: "#e8eff3",
+      wishlists: "#edf0f6",
+      leaveTime: "#e9f0f4"
+    }
+  },
+  {
+    name: "Lavender Dusk",
+    description: "Soft twilight hues",
+    colors: {
+      home: "#f2eff8",
+      schedule: "#eeeaf6",
+      money: "#f4eef3",
+      groceries: "#f0ecf2",
+      chat: "#ede9f3",
+      diary: "#f3eff5",
+      goals: "#eeeaf2",
+      wishlists: "#f5eff6",
+      leaveTime: "#efedf4"
+    }
+  },
+  {
+    name: "Forest Morning",
+    description: "Fresh, natural greens",
+    colors: {
+      home: "#eef4f0",
+      schedule: "#ecf2ee",
+      money: "#f2f0ec",
+      groceries: "#eaf2ec",
+      chat: "#e8f0eb",
+      diary: "#f0eee8",
+      goals: "#e9f1eb",
+      wishlists: "#f0ede9",
+      leaveTime: "#eaf2ed"
     }
   },
   {
     name: "Monochrome",
+    description: "Clean and minimal",
     colors: {
-      home: "#ffffff",
+      home: "#f8f9fa",
       schedule: "#f3f4f6",
-      money: "#e5e7eb",
-      groceries: "#d1d5db",
-      chat: "#9ca3af",
-      diary: "#e5e7eb",
-      goals: "#d1d5db",
-      wishlists: "#e5e7eb",
+      money: "#f1f2f4",
+      groceries: "#eef0f2",
+      chat: "#f0f1f3",
+      diary: "#f2f3f5",
+      goals: "#eff0f2",
+      wishlists: "#f1f2f4",
       leaveTime: "#f3f4f6"
     }
   },
   {
     name: "Deep Night",
+    description: "Dark and refined",
     colors: {
-      home: "#1e293b",
-      schedule: "#334155",
-      money: "#475569",
-      groceries: "#64748b",
-      chat: "#94a3b8",
-      diary: "#78716c",
-      goals: "#3d5a45",
-      wishlists: "#5a3d50",
-      leaveTime: "#1b4332"
+      home: "#1a1d23",
+      schedule: "#1e2128",
+      money: "#21242b",
+      groceries: "#1d2027",
+      chat: "#1b1f25",
+      diary: "#201f24",
+      goals: "#1c2122",
+      wishlists: "#211e24",
+      leaveTime: "#1b2120"
     }
   }
 ];
@@ -219,20 +254,27 @@ export default function Settings() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {THEME_PRESETS.map((preset) => (
-                  <button
-                    key={preset.name}
-                    onClick={() => setTheme(preset.colors)}
-                    className="p-4 rounded-[2rem] border-2 border-slate-100 bg-white hover:border-primary/40 transition-all group text-left"
-                  >
-                    <div className="flex gap-1 mb-3">
-                      {Object.values(preset.colors).map((c, i) => (
-                        <div key={i} className="w-4 h-4 rounded-full border border-white" style={{ backgroundColor: c }} />
-                      ))}
-                    </div>
-                    <p className="font-black text-slate-900 group-hover:text-primary transition-colors">{preset.name}</p>
-                  </button>
-                ))}
+                {THEME_PRESETS.map((preset) => {
+                  const isActive = JSON.stringify(theme) === JSON.stringify(preset.colors);
+                  return (
+                    <button
+                      key={preset.name}
+                      onClick={() => setTheme(preset.colors)}
+                      data-testid={`button-theme-${preset.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      className={`p-4 rounded-[2rem] border-2 transition-all group text-left ${isActive ? 'border-primary/50 bg-primary/5 shadow-md' : 'border-slate-100 bg-white hover:border-slate-200'}`}
+                    >
+                      <div className="flex gap-1 mb-3">
+                        {Object.values(preset.colors).slice(0, 6).map((c, i) => (
+                          <div key={i} className="w-5 h-5 rounded-lg border-2 border-white shadow-sm" style={{ backgroundColor: c }} />
+                        ))}
+                      </div>
+                      <p className={`font-black text-sm ${isActive ? 'text-primary' : 'text-slate-900 group-hover:text-primary'} transition-colors`}>{preset.name}</p>
+                      {'description' in preset && (
+                        <p className="text-[11px] font-medium text-slate-400 mt-0.5">{preset.description}</p>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
@@ -251,7 +293,7 @@ export default function Settings() {
                     <Palette className="w-6 h-6 text-primary" />
                   </div>
                   <h4 className="font-black text-slate-900">Live Preview</h4>
-                  <p className="text-xs font-bold text-slate-500 mt-1">Dashbaord Background</p>
+                  <p className="text-xs font-bold text-slate-500 mt-1">Dashboard Background</p>
                 </div>
               </div>
             </CardContent>

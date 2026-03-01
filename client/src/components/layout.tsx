@@ -16,43 +16,43 @@ export function Layout({ children }: { children: ReactNode }) {
   const createFamily = useCreateFamily();
   const [familyName, setFamilyName] = useState("");
   const [selectedTheme, setSelectedTheme] = useState({
-    home: "#b3d9ff",
-    schedule: "#e0b3ff",
-    money: "#ffb3c1",
-    groceries: "#ffd9b3",
-    chat: "#b3ffcc",
-    diary: "#f5e6d3"
+    home: "#f0f4f8",
+    schedule: "#f3f0f8",
+    money: "#f8f0f0",
+    groceries: "#f5f3ee",
+    chat: "#eef5f2",
+    diary: "#f7f3ee"
   });
   const [location] = useLocation();
 
   const THEMES = [
-    { name: "Pastel", colors: { home: "#b3d9ff", schedule: "#e0b3ff", money: "#ffb3c1", groceries: "#ffd9b3", chat: "#b3ffcc", diary: "#f5e6d3" } },
-    { name: "Colorful", colors: { home: "#3b82f6", schedule: "#8b5cf6", money: "#ef4444", groceries: "#f59e0b", chat: "#10b981", diary: "#d97706" } },
-    { name: "Basic", colors: { home: "#f8fafc", schedule: "#f1f5f9", money: "#e2e8f0", groceries: "#cbd5e1", chat: "#94a3b8", diary: "#e2d8cd" } },
-    { name: "Mono", colors: { home: "#ffffff", schedule: "#f3f4f6", money: "#e5e7eb", groceries: "#d1d5db", chat: "#9ca3af", diary: "#e5e7eb" } },
-    { name: "Night", colors: { home: "#1e293b", schedule: "#334155", money: "#475569", groceries: "#64748b", chat: "#94a3b8", diary: "#78716c" } },
+    { name: "Soft Cloud", colors: { home: "#f0f4f8", schedule: "#f3f0f8", money: "#f8f0f0", groceries: "#f5f3ee", chat: "#eef5f2", diary: "#f7f3ee" } },
+    { name: "Warm Sand", colors: { home: "#f5f0e8", schedule: "#f0ebe3", money: "#f3ece4", groceries: "#efe8de", chat: "#eee9e0", diary: "#f2ebe1" } },
+    { name: "Ocean Mist", colors: { home: "#edf2f7", schedule: "#e8eef6", money: "#eef0f5", groceries: "#e9eff5", chat: "#e6eef4", diary: "#eef1f6" } },
+    { name: "Lavender", colors: { home: "#f2eff8", schedule: "#eeeaf6", money: "#f4eef3", groceries: "#f0ecf2", chat: "#ede9f3", diary: "#f3eff5" } },
+    { name: "Night", colors: { home: "#1a1d23", schedule: "#1e2128", money: "#21242b", groceries: "#1d2027", chat: "#1b1f25", diary: "#201f24" } },
   ];
 
   const getStyle = () => {
     const config = (family?.themeConfig as any) || {
-      home: "#b3d9ff",
-      schedule: "#e0b3ff",
-      money: "#ffb3c1",
-      groceries: "#ffd9b3",
-      chat: "#b3ffcc"
+      home: "#f0f4f8",
+      schedule: "#f3f0f8",
+      money: "#f8f0f0",
+      groceries: "#f5f3ee",
+      chat: "#eef5f2"
     };
     
-    let bgColor = "#ffffff";
+    let bgColor = "#f8f9fa";
     if (location === "/") bgColor = config.home;
     else if (location === "/schedule") bgColor = config.schedule;
     else if (location === "/money") bgColor = config.money;
     else if (location.startsWith("/groceries")) bgColor = config.groceries;
     else if (location === "/chat") bgColor = config.chat;
-    else if (location === "/diary") bgColor = config.diary || "#f5e6d3";
-    else if (location === "/goals") bgColor = config.goals || "#d4edda";
-    else if (location === "/wishlists") bgColor = config.wishlists || "#fce4ec";
-    else if (location === "/leave-time") bgColor = config.leaveTime || "#e8f5e9";
-    else if (location === "/settings") bgColor = "#f1f5f9";
+    else if (location === "/diary") bgColor = config.diary || "#f7f3ee";
+    else if (location === "/goals") bgColor = config.goals || "#eef4f0";
+    else if (location === "/wishlists") bgColor = config.wishlists || "#f6f0f4";
+    else if (location === "/leave-time") bgColor = config.leaveTime || "#f0f5f2";
+    else if (location === "/settings") bgColor = "#f3f4f6";
 
     return { 
       backgroundColor: bgColor,
