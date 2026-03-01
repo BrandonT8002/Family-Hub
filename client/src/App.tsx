@@ -13,6 +13,7 @@ import Money from "@/pages/money";
 import Groceries from "@/pages/groceries";
 import GroceryListDetail from "@/pages/grocery-list-detail";
 import Chat from "@/pages/chat";
+import Diary from "@/pages/diary";
 import Settings from "@/pages/settings";
 
 function Router() {
@@ -25,6 +26,7 @@ function Router() {
         <Route path="/groceries" component={Groceries}/>
         <Route path="/groceries/:listId" component={GroceryListDetail}/>
         <Route path="/chat" component={Chat}/>
+        <Route path="/diary" component={Diary}/>
         <Route path="/settings" component={Settings}/>
         <Route component={NotFound} />
       </Switch>

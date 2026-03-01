@@ -128,6 +128,32 @@ export const chatMessages = pgTable("chat_messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const diaryEntries = pgTable("diary_entries", {
+  id: serial("id").primaryKey(),
+  familyId: integer("family_id").references(() => families.id).notNull(),
+  userId: text("user_id").references(() => users.id).notNull(),
+  title: text("title"),
+  body: text("body").notNull(),
+  mood: text("mood"),
+  tags: text("tags").array(),
+  photoUrls: text("photo_urls").array(),
+  isPrivate: boolean("is_private").default(true).notNull(),
+  sharedWith: text("shared_with").array(),
+  isDeleted: boolean("is_deleted").default(false).notNull(),
+  deletedAt: timestamp("deleted_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const diarySettings = pgTable("diary_settings", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").references(() => users.id).notNull(),
+  familyId: integer("family_id").references(() => families.id).notNull(),
+  diaryPin: text("diary_pin"),
+  isLocked: boolean("is_locked").default(true).notNull(),
+  weeklyReflectionEnabled: boolean("weekly_reflection_enabled").default(false).notNull(),
+});
+
 export const blocks = pgTable("blocks", {
   id: serial("id").primaryKey(),
   blockerId: text("blocker_id").references(() => users.id).notNull(),
@@ -168,6 +194,12 @@ export type Conversation = typeof conversations.$inferSelect;
 export const insertBlockSchema = createInsertSchema(blocks).omit({ id: true, createdAt: true });
 export type InsertBlock = z.infer<typeof insertBlockSchema>;
 export type Block = typeof blocks.$inferSelect;
+
+export const insertDiaryEntrySchema = createInsertSchema(diaryEntries).omit({ id: true, createdAt: true, updatedAt: true, isDeleted: true, deletedAt: true });
+export type InsertDiaryEntry = z.infer<typeof insertDiaryEntrySchema>;
+export type DiaryEntry = typeof diaryEntries.$inferSelect;
+
+export type DiarySettings = typeof diarySettings.$inferSelect;
 
 export type FamilyMember = typeof familyMembers.$inferSelect;
 export type ConversationParticipant = typeof conversationParticipants.$inferSelect;

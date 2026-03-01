@@ -527,5 +527,145 @@ export async function registerRoutes(
     }
   });
 
+  // Diary
+  app.get('/api/diary', isAuthenticated, requireFamily, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const entries = await storage.getDiaryEntries(userId, req.family.id);
+    res.json(entries);
+  });
+
+  app.get('/api/diary/deleted', isAuthenticated, requireFamily, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const entries = await storage.getDeletedDiaryEntries(userId, req.family.id);
+    res.json(entries);
+  });
+
+  app.get('/api/diary/mood-stats', isAuthenticated, requireFamily, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const stats = await storage.getMoodStats(userId, req.family.id);
+    res.json(stats);
+  });
+
+  app.get('/api/diary/settings', isAuthenticated, requireFamily, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const settings = await storage.getDiarySettings(userId, req.family.id);
+    res.json(settings);
+  });
+
+  app.patch('/api/diary/settings', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const input = z.object({
+        diaryPin: z.string().min(4).max(6).optional(),
+        isLocked: z.boolean().optional(),
+        weeklyReflectionEnabled: z.boolean().optional(),
+      }).parse(req.body);
+      const settings = await storage.upsertDiarySettings(userId, req.family.id, input);
+      res.json(settings);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: "Failed to update settings" });
+    }
+  });
+
+  app.post('/api/diary/verify-pin', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { pin } = z.object({ pin: z.string() }).parse(req.body);
+      const settings = await storage.getDiarySettings(userId, req.family.id);
+      if (!settings || !settings.diaryPin) return res.json({ valid: true });
+      res.json({ valid: settings.diaryPin === pin });
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  app.get('/api/diary/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const entry = await storage.getDiaryEntry(Number(req.params.id));
+    if (!entry) return res.status(404).json({ message: "Entry not found" });
+    if (entry.userId !== userId) {
+      if (!entry.sharedWith?.includes(userId)) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+    }
+    res.json(entry);
+  });
+
+  app.post('/api/diary', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const input = z.object({
+        title: z.string().optional(),
+        body: z.string().min(1),
+        mood: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+        photoUrls: z.array(z.string()).optional(),
+        isPrivate: z.boolean().optional().default(true),
+      }).parse(req.body);
+      const entry = await storage.createDiaryEntry({
+        ...input,
+        userId,
+        familyId: req.family.id,
+        tags: input.tags || null,
+        photoUrls: input.photoUrls || null,
+        sharedWith: null,
+      });
+      res.status(201).json(entry);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: "Failed to create entry" });
+    }
+  });
+
+  app.patch('/api/diary/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entry = await storage.getDiaryEntry(Number(req.params.id));
+      if (!entry) return res.status(404).json({ message: "Entry not found" });
+      if (entry.userId !== userId) return res.status(403).json({ message: "Access denied" });
+      const input = z.object({
+        title: z.string().nullable().optional(),
+        body: z.string().min(1).optional(),
+        mood: z.string().nullable().optional(),
+        tags: z.array(z.string()).nullable().optional(),
+        photoUrls: z.array(z.string()).nullable().optional(),
+        isPrivate: z.boolean().optional(),
+        sharedWith: z.array(z.string()).nullable().optional(),
+      }).parse(req.body);
+      const updated = await storage.updateDiaryEntry(entry.id, input);
+      res.json(updated);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: "Failed to update entry" });
+    }
+  });
+
+  app.delete('/api/diary/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entry = await storage.getDiaryEntry(Number(req.params.id));
+      if (!entry) return res.status(404).json({ message: "Entry not found" });
+      if (entry.userId !== userId) return res.status(403).json({ message: "Access denied" });
+      await storage.softDeleteDiaryEntry(entry.id);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to delete entry" });
+    }
+  });
+
+  app.patch('/api/diary/:id/restore', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const entry = await storage.getDiaryEntry(Number(req.params.id));
+      if (!entry) return res.status(404).json({ message: "Entry not found" });
+      if (entry.userId !== userId) return res.status(403).json({ message: "Access denied" });
+      const restored = await storage.restoreDiaryEntry(entry.id);
+      res.json(restored);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to restore entry" });
+    }
+  });
+
   return httpServer;
 }

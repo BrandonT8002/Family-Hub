@@ -21,7 +21,8 @@ const DEFAULT_THEME = {
   schedule: "#e0b3ff",
   money: "#ffb3c1",
   groceries: "#ffd9b3",
-  chat: "#b3ffcc"
+  chat: "#b3ffcc",
+  diary: "#f5e6d3"
 };
 
 const THEME_PRESETS = [
@@ -32,21 +33,23 @@ const THEME_PRESETS = [
   {
     name: "Colorful",
     colors: {
-      home: "#3b82f6", // Blue
-      schedule: "#8b5cf6", // Violet
-      money: "#ef4444", // Red
-      groceries: "#f59e0b", // Amber
-      chat: "#10b981"  // Emerald
+      home: "#3b82f6",
+      schedule: "#8b5cf6",
+      money: "#ef4444",
+      groceries: "#f59e0b",
+      chat: "#10b981",
+      diary: "#d97706"
     }
   },
   {
     name: "Basic",
     colors: {
-      home: "#f8fafc", // Slate 50
-      schedule: "#f1f5f9", // Slate 100
-      money: "#e2e8f0", // Slate 200
-      groceries: "#cbd5e1", // Slate 300
-      chat: "#94a3b8"  // Slate 400
+      home: "#f8fafc",
+      schedule: "#f1f5f9",
+      money: "#e2e8f0",
+      groceries: "#cbd5e1",
+      chat: "#94a3b8",
+      diary: "#e2d8cd"
     }
   },
   {
@@ -56,7 +59,8 @@ const THEME_PRESETS = [
       schedule: "#f3f4f6",
       money: "#e5e7eb",
       groceries: "#d1d5db",
-      chat: "#9ca3af"
+      chat: "#9ca3af",
+      diary: "#e5e7eb"
     }
   },
   {
@@ -66,7 +70,8 @@ const THEME_PRESETS = [
       schedule: "#334155",
       money: "#475569",
       groceries: "#64748b",
-      chat: "#94a3b8"
+      chat: "#94a3b8",
+      diary: "#78716c"
     }
   }
 ];

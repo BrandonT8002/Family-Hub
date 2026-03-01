@@ -2,9 +2,10 @@ import { db } from "./db";
 import {
   families, familyMembers, events, expenses, groceryLists, groceryItems, chatMessages, users,
   financialSchedule, savingsGoals, conversations, conversationParticipants, blocks,
-  type InsertFamily, type InsertEvent, type InsertExpense, type InsertGroceryList, type InsertGroceryItem, type InsertChatMessage
+  diaryEntries, diarySettings,
+  type InsertFamily, type InsertEvent, type InsertExpense, type InsertGroceryList, type InsertGroceryItem, type InsertChatMessage, type InsertDiaryEntry
 } from "@shared/schema";
-import { eq, desc, and, or, ne, inArray } from "drizzle-orm";
+import { eq, desc, and, or, ne, inArray, isNull } from "drizzle-orm";
 
 export interface IStorage {
   getFamilyForUser(userId: string): Promise<typeof families.$inferSelect | null>;
@@ -393,6 +394,93 @@ export class DatabaseStorage implements IStorage {
       )
     );
     return !!block;
+  }
+
+  async getDiaryEntries(userId: string, familyId: number) {
+    return await db.select().from(diaryEntries)
+      .where(and(
+        eq(diaryEntries.userId, userId),
+        eq(diaryEntries.familyId, familyId),
+        eq(diaryEntries.isDeleted, false)
+      ))
+      .orderBy(desc(diaryEntries.createdAt));
+  }
+
+  async getDiaryEntry(id: number) {
+    const [entry] = await db.select().from(diaryEntries).where(eq(diaryEntries.id, id));
+    return entry || null;
+  }
+
+  async createDiaryEntry(entry: InsertDiaryEntry) {
+    const [newEntry] = await db.insert(diaryEntries).values(entry).returning();
+    return newEntry;
+  }
+
+  async updateDiaryEntry(id: number, data: Partial<typeof diaryEntries.$inferSelect>) {
+    const [updated] = await db.update(diaryEntries)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(diaryEntries.id, id))
+      .returning();
+    return updated;
+  }
+
+  async softDeleteDiaryEntry(id: number) {
+    const [updated] = await db.update(diaryEntries)
+      .set({ isDeleted: true, deletedAt: new Date() })
+      .where(eq(diaryEntries.id, id))
+      .returning();
+    return updated;
+  }
+
+  async restoreDiaryEntry(id: number) {
+    const [updated] = await db.update(diaryEntries)
+      .set({ isDeleted: false, deletedAt: null })
+      .where(eq(diaryEntries.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getDeletedDiaryEntries(userId: string, familyId: number) {
+    return await db.select().from(diaryEntries)
+      .where(and(
+        eq(diaryEntries.userId, userId),
+        eq(diaryEntries.familyId, familyId),
+        eq(diaryEntries.isDeleted, true)
+      ))
+      .orderBy(desc(diaryEntries.deletedAt));
+  }
+
+  async getDiarySettings(userId: string, familyId: number) {
+    const [settings] = await db.select().from(diarySettings)
+      .where(and(eq(diarySettings.userId, userId), eq(diarySettings.familyId, familyId)));
+    return settings || null;
+  }
+
+  async upsertDiarySettings(userId: string, familyId: number, data: Partial<typeof diarySettings.$inferSelect>) {
+    const existing = await this.getDiarySettings(userId, familyId);
+    if (existing) {
+      const [updated] = await db.update(diarySettings)
+        .set(data)
+        .where(eq(diarySettings.id, existing.id))
+        .returning();
+      return updated;
+    }
+    const [created] = await db.insert(diarySettings)
+      .values({ userId, familyId, ...data })
+      .returning();
+    return created;
+  }
+
+  async getMoodStats(userId: string, familyId: number) {
+    const entries = await db.select({ mood: diaryEntries.mood, createdAt: diaryEntries.createdAt })
+      .from(diaryEntries)
+      .where(and(
+        eq(diaryEntries.userId, userId),
+        eq(diaryEntries.familyId, familyId),
+        eq(diaryEntries.isDeleted, false)
+      ))
+      .orderBy(diaryEntries.createdAt);
+    return entries;
   }
 }
 

@@ -40,6 +40,8 @@ server/
 - **conversation_participants** - Users in each conversation
 - **chat_messages** - Messages linked to conversations (messageType: text/image/video/voice, mediaUrl, mediaDuration)
 - **blocks** - User blocking system
+- **diary_entries** - Private diary entries (title, body, mood, tags, photoUrls, isPrivate, sharedWith, soft-delete)
+- **diary_settings** - Per-user diary settings (PIN lock, weekly reflection prompt)
 
 ## Features
 - **Dashboard**: Overview of events, expenses, savings
@@ -47,7 +49,8 @@ server/
 - **Money**: Expenses, financial schedule, savings goals
 - **Groceries**: Shopping lists with Wants/Needs categorization, private/shared toggle per list
 - **Chat**: Family group chat + private DMs with message request system, blocking, message deletion, media messages (photos, videos, voice notes via file upload + MediaRecorder API)
-- **Settings**: Theme presets (Pastel, Colorful, Basic, Monochrome, Deep Night), font selection, per-module color customization
+- **Diary**: Protected private reflection space — PIN lock, mood tracking (10 moods), tags, photo attachments, privacy per entry, search/filter, mood insights with distribution charts, soft-delete with 30-day trash, diary settings (PIN, weekly reflection prompt)
+- **Settings**: Theme presets (Pastel, Colorful, Basic, Monochrome, Deep Night), font selection, per-module color customization (includes diary)
 
 ## Privacy Architecture
 - Role-based: Owner, Adult, Teen, Youth, Child, Caregiver

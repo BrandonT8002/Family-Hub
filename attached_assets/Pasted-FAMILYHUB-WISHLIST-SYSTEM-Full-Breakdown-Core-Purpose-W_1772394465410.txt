@@ -1,0 +1,271 @@
+FAMILYHUB — WISHLIST SYSTEM (Full Breakdown)
+
+Core Purpose
+
+Wishlists are not just “wants.”
+
+They are:
+
+• A communication tool
+• A budgeting awareness tool
+• A gifting coordination system
+• A family transparency tool
+• A boundary-respecting alternative to awkward conversations
+
+They allow users to express what they want without pressure.
+
+They reduce:
+• Guessing during holidays
+• Duplicate gifts
+• Overspending
+• Emotional misalignment
+
+⸻
+
+1. Wishlist Types
+
+Users can create multiple wishlists.
+
+Wishlists are not limited to one per person.
+
+Examples:
+
+• Birthday List
+• Christmas List
+• “Someday” List
+• Clothing Needs
+• Upgrade List
+• Home Improvements
+• Baby Registry
+• Graduation List
+• Dream Board
+
+Users name their own lists.
+
+No preset categories required.
+
+⸻
+
+2. Wants vs Needs Separation
+
+Each list item can be marked as:
+
+• Want
+• Need
+
+This helps families:
+
+• Understand urgency
+• Budget properly
+• Avoid impulse purchases
+• See patterns in spending
+
+Children 12 and under:
+• Cannot publicly share lists outside family without permission
+
+13+:
+• Can manage own lists with visibility controls
+
+⸻
+
+3. Visibility Controls
+
+Each wishlist can be:
+
+• Private
+• Shared with family
+• Shared with specific members
+• Shared with connected outside family
+
+Owner controls visibility rules for minors.
+
+Adults control their own visibility fully.
+
+No cross-family automatic access.
+
+⸻
+
+4. Item Details Per Wishlist Entry
+
+Each item can include:
+
+• Item name
+• Category (clothing, tech, books, etc.)
+• Estimated price
+• Store name
+• Optional store link (manual entry only)
+• Notes (size, color, version, preference)
+• Priority level (Low / Medium / High)
+• Want or Need tag
+• Status (Unclaimed / Claimed / Purchased)
+
+Optional:
+• Photo attachment
+
+No scraping required.
+All user-controlled input.
+
+⸻
+
+5. Claim System (Gift Coordination)
+
+For shared wishlists:
+
+Family members can:
+
+• Mark item as “Claimed”
+• Mark item as “Purchased”
+• Leave private note (“ordered already”)
+
+Important:
+If claimed, the person who owns the list cannot see who claimed it (optional setting).
+
+This keeps surprises intact.
+
+Owner can choose:
+• Show who claimed
+• Hide who claimed
+
+⸻
+
+6. Outside Family Integration
+
+If two families connect:
+
+They can:
+
+• Share specific wishlists
+• Coordinate gifts
+• Avoid duplicate purchases
+• Schedule exchanges
+
+They cannot:
+
+• See finances
+• See goals
+• See private diaries
+• See full schedule
+
+Wishlist sharing is permission-based.
+
+⸻
+
+7. Budget Awareness Integration
+
+Wishlists integrate with Money tab.
+
+Users can:
+
+• See total estimated wishlist cost
+• Compare wishlist vs savings goal
+• Track how much was spent vs planned
+
+This helps families:
+
+• Avoid holiday debt
+• Plan months in advance
+• Spread purchases over time
+
+⸻
+
+8. Long-Term Wishlist Mode
+
+Users can create:
+
+• Dream list (long-term)
+• 5-year goal wishlist
+• “When money is right” list
+
+These can connect to long-term savings goals.
+
+Example:
+“Vacation to Hawaii”
+• Linked to $4,000 savings goal
+
+⸻
+
+9. Seasonal Mode
+
+Wishlists can be:
+
+• Time-based (Holiday mode)
+• Open-ended
+• Year-round
+
+Polls can be attached:
+“What do we prioritize first?”
+
+⸻
+
+10. Shopping List Integration
+
+Wishlist items can:
+
+• Be moved to shopping list
+• Be converted to goal
+• Be converted to money-linked savings target
+
+Example:
+Wishlist item → Move to “Needs List” → Add to grocery run.
+
+⸻
+
+11. Duplicate Protection
+
+System prevents:
+
+• Same person claiming twice
+• Duplicate purchase markers
+• Accidental double claims
+
+Soft warning only.
+
+⸻
+
+12. Emotional Purpose
+
+Wishlists reduce tension by:
+
+• Removing awkward asking
+• Giving clarity
+• Allowing children to express interest
+• Giving adults transparency
+• Making gift-giving strategic
+
+It becomes a communication bridge.
+
+⸻
+
+13. Privacy Summary
+
+Adults:
+• Full control
+
+Teens:
+• Personal control unless owner restricts
+
+Children:
+• Owner-controlled visibility
+
+Outside families:
+• Access only to explicitly shared lists
+
+No one sees:
+• Private lists without permission
+• Financial information tied to list unless allowed
+
+⸻
+
+14. Retention Factor
+
+Wishlists encourage:
+
+• Year-round engagement
+• Seasonal engagement spikes
+• Cross-family interaction
+• Financial planning
+
+If removed, families would feel:
+• Less organized during holidays
+• More last-minute stress
+• More duplicate purchases

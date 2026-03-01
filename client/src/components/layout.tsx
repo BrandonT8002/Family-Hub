@@ -21,16 +21,17 @@ export function Layout({ children }: { children: ReactNode }) {
     schedule: "#e0b3ff",
     money: "#ffb3c1",
     groceries: "#ffd9b3",
-    chat: "#b3ffcc"
+    chat: "#b3ffcc",
+    diary: "#f5e6d3"
   });
   const [location] = useLocation();
 
   const THEMES = [
-    { name: "Pastel", colors: { home: "#b3d9ff", schedule: "#e0b3ff", money: "#ffb3c1", groceries: "#ffd9b3", chat: "#b3ffcc" } },
-    { name: "Colorful", colors: { home: "#3b82f6", schedule: "#8b5cf6", money: "#ef4444", groceries: "#f59e0b", chat: "#10b981" } },
-    { name: "Basic", colors: { home: "#f8fafc", schedule: "#f1f5f9", money: "#e2e8f0", groceries: "#cbd5e1", chat: "#94a3b8" } },
-    { name: "Mono", colors: { home: "#ffffff", schedule: "#f3f4f6", money: "#e5e7eb", groceries: "#d1d5db", chat: "#9ca3af" } },
-    { name: "Night", colors: { home: "#1e293b", schedule: "#334155", money: "#475569", groceries: "#64748b", chat: "#94a3b8" } },
+    { name: "Pastel", colors: { home: "#b3d9ff", schedule: "#e0b3ff", money: "#ffb3c1", groceries: "#ffd9b3", chat: "#b3ffcc", diary: "#f5e6d3" } },
+    { name: "Colorful", colors: { home: "#3b82f6", schedule: "#8b5cf6", money: "#ef4444", groceries: "#f59e0b", chat: "#10b981", diary: "#d97706" } },
+    { name: "Basic", colors: { home: "#f8fafc", schedule: "#f1f5f9", money: "#e2e8f0", groceries: "#cbd5e1", chat: "#94a3b8", diary: "#e2d8cd" } },
+    { name: "Mono", colors: { home: "#ffffff", schedule: "#f3f4f6", money: "#e5e7eb", groceries: "#d1d5db", chat: "#9ca3af", diary: "#e5e7eb" } },
+    { name: "Night", colors: { home: "#1e293b", schedule: "#334155", money: "#475569", groceries: "#64748b", chat: "#94a3b8", diary: "#78716c" } },
   ];
 
   const getPastelBg = () => {
@@ -47,6 +48,7 @@ export function Layout({ children }: { children: ReactNode }) {
     if (location === "/money") return `bg-[${config.money}]`;
     if (location.startsWith("/groceries")) return `bg-[${config.groceries}]`;
     if (location === "/chat") return `bg-[${config.chat}]`;
+    if (location === "/diary") return `bg-[${config.diary || "#f5e6d3"}]`;
     if (location === "/settings") return "bg-slate-100";
     return "bg-background";
   };
@@ -66,6 +68,7 @@ export function Layout({ children }: { children: ReactNode }) {
     else if (location === "/money") bgColor = config.money;
     else if (location.startsWith("/groceries")) bgColor = config.groceries;
     else if (location === "/chat") bgColor = config.chat;
+    else if (location === "/diary") bgColor = config.diary || "#f5e6d3";
     else if (location === "/settings") bgColor = "#f1f5f9";
 
     return { 
