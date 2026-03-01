@@ -63,7 +63,7 @@ export async function registerRoutes(
       const userId = req.user.claims.sub;
       const family = await storage.createFamily(input.name, userId);
       if (input.themeConfig) {
-        await storage.updateFamily(family.id, { themeConfig: input.themeConfig });
+        await storage.updateFamily(family.id, { themeConfig: input.themeConfig, fontFamily: input.fontFamily });
       }
       res.status(201).json(family);
     } catch (err) {

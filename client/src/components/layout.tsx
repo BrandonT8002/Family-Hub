@@ -60,13 +60,18 @@ export function Layout({ children }: { children: ReactNode }) {
       chat: "#b3ffcc"
     };
     
-    if (location === "/") return config.home;
-    if (location === "/schedule") return config.schedule;
-    if (location === "/money") return config.money;
-    if (location.startsWith("/groceries")) return config.groceries;
-    if (location === "/chat") return config.chat;
-    if (location === "/settings") return "#f1f5f9";
-    return "#ffffff";
+    let bgColor = "#ffffff";
+    if (location === "/") bgColor = config.home;
+    else if (location === "/schedule") bgColor = config.schedule;
+    else if (location === "/money") bgColor = config.money;
+    else if (location.startsWith("/groceries")) bgColor = config.groceries;
+    else if (location === "/chat") bgColor = config.chat;
+    else if (location === "/settings") bgColor = "#f1f5f9";
+
+    return { 
+      backgroundColor: bgColor,
+      fontFamily: family?.fontFamily || "'Bricolage Grotesque', sans-serif"
+    };
   };
 
   if (authLoading) {
@@ -167,7 +172,7 @@ export function Layout({ children }: { children: ReactNode }) {
     <SidebarProvider style={style}>
       <div 
         className="flex h-screen w-full transition-colors duration-500 text-foreground overflow-hidden"
-        style={{ backgroundColor: getStyle() }}
+        style={getStyle()}
       >
         <AppSidebar />
         <div className="flex flex-col flex-1 w-full relative overflow-hidden">

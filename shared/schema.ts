@@ -10,6 +10,7 @@ export const families = pgTable("families", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   ownerId: text("owner_id").references(() => users.id).notNull(),
+  fontFamily: text("font_family").default("Bricolage Grotesque"),
   themeConfig: jsonb("theme_config").default({
     home: "#b3d9ff",
     schedule: "#e0b3ff",

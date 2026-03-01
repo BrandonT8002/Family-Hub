@@ -2,9 +2,19 @@ import { useFamily, useUpdateFamily } from "@/hooks/use-family";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
-import { Paintbrush, Palette, Check, RefreshCcw } from "lucide-react";
+import { Paintbrush, Palette, Check, RefreshCcw, Type } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+const FONTS = [
+  { name: "Bricolage Grotesque", value: "'Bricolage Grotesque', sans-serif" },
+  { name: "Plus Jakarta Sans", value: "'Plus Jakarta Sans', sans-serif" },
+  { name: "Inter", value: "'Inter', sans-serif" },
+  { name: "Poppins", value: "'Poppins', sans-serif" },
+  { name: "Outfit", value: "'Outfit', sans-serif" },
+  { name: "Montserrat", value: "'Montserrat', sans-serif" },
+];
 
 const DEFAULT_THEME = {
   home: "#b3d9ff",
@@ -66,18 +76,22 @@ export default function Settings() {
   const updateFamily = useUpdateFamily();
   const { toast } = useToast();
   const [theme, setTheme] = useState(DEFAULT_THEME);
+  const [fontFamily, setFontFamily] = useState("'Bricolage Grotesque', sans-serif");
 
   useEffect(() => {
     if (family?.themeConfig) {
       setTheme(family.themeConfig as typeof DEFAULT_THEME);
     }
+    if (family?.fontFamily) {
+      setFontFamily(family.fontFamily);
+    }
   }, [family]);
 
   const handleSave = () => {
-    updateFamily.mutate({ themeConfig: theme }, {
+    updateFamily.mutate({ themeConfig: theme, fontFamily }, {
       onSuccess: () => {
         toast({
-          title: "Theme saved!",
+          title: "Settings saved!",
           description: "Your family space has been updated.",
         });
       }
@@ -86,6 +100,7 @@ export default function Settings() {
 
   const handleReset = () => {
     setTheme(DEFAULT_THEME);
+    setFontFamily("'Bricolage Grotesque', sans-serif");
   };
 
   return (
@@ -110,6 +125,24 @@ export default function Settings() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="space-y-4 mb-8 pb-8 border-b border-slate-100">
+                <label className="text-sm font-black text-slate-700 ml-1 flex items-center gap-2">
+                  <Type className="w-4 h-4 text-primary" /> Typography Style
+                </label>
+                <Select value={fontFamily} onValueChange={setFontFamily}>
+                  <SelectTrigger className="h-14 rounded-2xl border-2 border-slate-100 bg-slate-50 font-bold">
+                    <SelectValue placeholder="Select a font" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-2xl">
+                    {FONTS.map((font) => (
+                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+                        {font.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {Object.entries(theme).map(([key, value]) => (
                   <div key={key} className="space-y-3">
