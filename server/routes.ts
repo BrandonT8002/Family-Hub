@@ -179,6 +179,8 @@ export async function registerRoutes(
       const list = await storage.createGroceryList({
         ...input,
         familyId: req.family.id,
+        storeName: (req.body as any).storeName || null,
+        type: input.type || "Needs",
       });
       res.status(201).json(list);
     } catch (err) {
@@ -201,6 +203,8 @@ export async function registerRoutes(
         ...input,
         listId: Number(req.params.listId),
         price: input.price?.toString() || "0",
+        notes: (req.body as any).notes || null,
+        assignedTo: (req.body as any).assignedTo || null,
       });
       res.status(201).json(item);
     } catch (err) {

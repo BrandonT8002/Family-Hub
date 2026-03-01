@@ -1,0 +1,252 @@
+Overview
+
+The Shopping List system is a fully functional, intelligent list builder designed to reduce grocery stress, prevent overspending, and streamline in-store shopping.
+
+It is more than a checklist.
+
+It combines:
+	•	Categorization by aisle
+	•	Price tracking
+	•	Store comparison
+	•	Budget awareness
+	•	Wants vs Needs separation
+	•	Multi-store coordination
+
+The goal is efficiency + financial clarity.
+
+⸻
+
+Core Structure
+
+1. Multiple Lists
+
+Users can create unlimited lists:
+
+Examples:
+	•	Weekly Groceries
+	•	Costco Run
+	•	School Supplies
+	•	Christmas Gifts
+	•	Hardware Store
+	•	Vacation Packing List
+
+Each list can be:
+	•	Personal
+	•	Shared with selected family members
+	•	Visible to outside approved families (optional)
+
+⸻
+
+2. Grocery Aisle Organization
+
+When creating a grocery list, items are automatically categorized into store sections.
+
+Default aisle categories:
+	•	Produce
+	•	Meat
+	•	Seafood
+	•	Dairy
+	•	Frozen
+	•	Bakery
+	•	Deli
+	•	Pantry / Dry Goods
+	•	Beverages
+	•	Snacks
+	•	Household
+	•	Toiletries
+	•	Baby
+	•	Pet
+	•	Pharmacy
+	•	Miscellaneous
+
+Users can:
+	•	Reassign items to different categories
+	•	Create custom aisle categories
+	•	Hide unused categories
+
+Items are displayed grouped by aisle to match how users move through the store.
+
+Example view:
+
+Produce
+	•	Apples
+	•	Bananas
+
+Meat
+	•	Ground Beef
+	•	Chicken Breast
+
+Dairy
+	•	Milk
+	•	Cheese
+
+This reduces backtracking in the store.
+
+⸻
+
+3. Smart Categorization Prompt
+
+If a user adds an item without selecting a category:
+
+The app asks:
+
+“Is this a produce item, dairy, meat, or something else?”
+
+This keeps the list organized automatically.
+
+⸻
+
+4. Multi-Store Support
+
+Users can assign a store to a list.
+
+Features:
+	•	Select from saved stores
+	•	Add new store manually
+	•	Multiple stores for one trip
+	•	Store-specific pricing memory
+
+Example:
+	•	Walmart list
+	•	Publix list
+	•	Costco list
+
+⸻
+
+5. Item-Level Price Tracking
+
+Users can manually enter item prices:
+
+Example:
+	•	Ground beef – $2.14/lb at Walmart
+
+Next visit:
+	•	Ground beef – $2.16/lb
+
+The system tracks:
+	•	Price changes over time
+	•	Store comparison averages
+	•	Inflation trends
+
+This data feeds into the Money tab for weekly/monthly spending reports.
+
+Price tracking is optional.
+
+Users can skip pricing entirely.
+
+⸻
+
+6. Check-Off System
+
+While in the store:
+	•	Tap item → mark as picked up
+	•	Completed items move to bottom or fade visually
+	•	Optional “remove checked items after checkout”
+
+Designed for one-handed use while shopping.
+
+⸻
+
+7. Wants vs Needs
+
+Users can create separate lists:
+
+Needs:
+	•	Essentials
+	•	Groceries
+	•	Household supplies
+
+Wants:
+	•	Gift ideas
+	•	Personal shopping
+	•	Clothing
+	•	Tech
+
+Visibility controls:
+	•	13+ users can control who sees their list
+	•	12 and under require owner permissions
+
+⸻
+
+8. Budget Awareness
+
+Each list shows:
+	•	Estimated total (if prices entered)
+	•	Tax estimate (optional)
+	•	Running total as items are checked off
+
+Optional grocery calculator:
+	•	Adds tax
+	•	Updates live as prices entered
+	•	Shows difference from previous week
+
+⸻
+
+9. Weekly & Monthly Snapshots
+
+Shopping data feeds into:
+	•	Weekly grocery total
+	•	Monthly grocery comparison
+	•	Store average comparison
+	•	Year-over-year grocery cost trends
+
+This ties directly into financial awareness.
+
+⸻
+
+10. Coordination Mode
+
+Multiple users can:
+	•	Add items
+	•	Remove items (if permitted)
+	•	Assign items to someone
+	•	Leave notes on items
+
+Example:
+“Don’t forget organic.”
+“Only if on sale.”
+
+⸻
+
+Permission Model
+
+Owner controls:
+	•	Who can delete items
+	•	Who can edit pricing
+	•	Who can see wants lists
+	•	Who can share outside the family
+
+13–14 users:
+	•	Limited delete permissions (owner decides)
+
+15+:
+	•	More autonomy
+
+⸻
+
+Design Philosophy
+
+The shopping list should:
+	•	Feel fast
+	•	Feel practical
+	•	Reduce store anxiety
+	•	Reduce forgotten items
+	•	Reduce impulse buying
+	•	Support financial awareness
+
+It should feel like a grocery companion, not a spreadsheet.
+
+⸻
+
+Emotional Goal
+
+If this feature disappeared, users would feel:
+	•	Disorganized in stores
+	•	More forgetful
+	•	Less aware of price increases
+	•	Less in control of grocery spending
+
+This feature supports:
+	•	Efficiency
+	•	Financial literacy
+	•	Shared household responsibility

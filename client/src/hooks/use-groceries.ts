@@ -16,7 +16,7 @@ export function useGroceryLists() {
 export function useCreateGroceryList() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { name: string; type?: string }) => {
+    mutationFn: async (data: { name: string; type?: string; storeName?: string }) => {
       const res = await apiRequest("POST", api.groceryLists.create.path, data);
       return api.groceryLists.create.responses[201].parse(await res.json());
     },
@@ -42,7 +42,7 @@ export function useGroceryItems(listId: string | number) {
 export function useCreateGroceryItem() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ listId, ...data }: { listId: string | number; name: string; category: string; price?: string | number }) => {
+    mutationFn: async ({ listId, ...data }: { listId: string | number; name: string; category: string; price?: string | number; notes?: string }) => {
       const path = buildUrl(api.groceryItems.create.path, { listId });
       const res = await apiRequest("POST", path, data);
       return api.groceryItems.create.responses[201].parse(await res.json());

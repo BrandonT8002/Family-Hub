@@ -4,49 +4,76 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingCart, Plus, ChevronRight } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { ShoppingCart, Plus, ChevronRight, Store, Tag, ListChecks } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Groceries() {
   const { data: lists, isLoading } = useGroceryLists();
   const createList = useCreateGroceryList();
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
+  const [type, setType] = useState("Needs");
+  const [storeName, setStoreName] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
     createList.mutate(
-      { name },
-      { onSuccess: () => { setIsOpen(false); setName(""); } }
+      { name, type, storeName },
+      { onSuccess: () => { 
+        setIsOpen(false); 
+        setName(""); 
+        setStoreName("");
+        setType("Needs");
+      } }
     );
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold">Grocery Lists</h1>
-          <p className="text-muted-foreground mt-1">Manage shopping needs together.</p>
+          <h1 className="text-4xl font-display font-bold tracking-tight">Shopping Lists</h1>
+          <p className="text-muted-foreground mt-2 text-lg">Stay organized and shop efficiently together.</p>
         </div>
         
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="rounded-xl shadow-md hover-elevate gap-2">
-              <Plus className="w-4 h-4" /> New List
+            <Button className="rounded-2xl h-12 px-6 shadow-lg shadow-primary/20 hover-elevate gap-2 text-base">
+              <Plus className="w-5 h-5" /> New List
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogContent className="sm:max-w-md rounded-3xl p-6 border-none shadow-2xl">
             <DialogHeader>
-              <DialogTitle className="font-display text-xl">Create a List</DialogTitle>
+              <DialogTitle className="font-display text-2xl">Create New List</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            <form onSubmit={handleSubmit} className="space-y-5 mt-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">List Name</label>
-                <Input required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Costco Run, Weekly Trader Joe's" className="rounded-xl h-11" autoFocus />
+                <label className="text-sm font-semibold ml-1">List Name</label>
+                <Input required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Weekly Groceries, Costco Run" className="rounded-xl h-12 bg-muted/50 border-transparent focus-visible:ring-primary/20 text-base" autoFocus />
               </div>
-              <Button type="submit" disabled={createList.isPending} className="w-full rounded-xl h-11">
-                {createList.isPending ? "Creating..." : "Create List"}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold ml-1">Type</label>
+                  <Select value={type} onValueChange={setType}>
+                    <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-transparent">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="Needs">Needs (Essentials)</SelectItem>
+                      <SelectItem value="Wants">Wants (Wishlist)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold ml-1">Store (Optional)</label>
+                  <Input value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="Walmart, Publix..." className="rounded-xl h-12 bg-muted/50 border-transparent focus-visible:ring-primary/20" />
+                </div>
+              </div>
+              <Button type="submit" disabled={createList.isPending} className="w-full rounded-2xl h-14 text-lg font-bold shadow-xl shadow-primary/10 mt-2">
+                {createList.isPending ? "Creating..." : "Start List"}
               </Button>
             </form>
           </DialogContent>
@@ -54,32 +81,48 @@ export default function Groceries() {
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center text-muted-foreground">Loading lists...</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1,2,3].map(i => <div key={i} className="h-48 bg-muted/50 rounded-3xl animate-pulse" />)}
+        </div>
       ) : lists?.length === 0 ? (
-        <Card className="rounded-2xl border-dashed border-2 bg-transparent shadow-none">
-          <CardContent className="flex flex-col items-center justify-center h-48 text-center">
-            <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-3">
-              <ShoppingCart className="w-6 h-6 text-muted-foreground" />
+        <Card className="rounded-[2.5rem] border-dashed border-2 border-border/50 bg-transparent shadow-none">
+          <CardContent className="flex flex-col items-center justify-center min-h-[400px] text-center p-10">
+            <div className="w-20 h-20 bg-primary/5 rounded-[2rem] flex items-center justify-center mb-6">
+              <ShoppingCart className="w-10 h-10 text-primary opacity-40" />
             </div>
-            <p className="text-muted-foreground font-medium">No grocery lists yet.</p>
+            <h2 className="text-2xl font-display font-bold mb-2">No active lists</h2>
+            <p className="text-muted-foreground max-w-sm mb-8">Create your first shopping list to stay organized and keep everyone in sync.</p>
+            <Button onClick={() => setIsOpen(true)} className="rounded-2xl h-12 px-8">Create Your First List</Button>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {lists?.map((list) => (
             <Link key={list.id} href={`/groceries/${list.id}`}>
-              <Card className="rounded-2xl border-border/50 hover-elevate cursor-pointer group h-full">
-                <CardContent className="p-6 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <ShoppingCart className="w-6 h-6" />
+              <Card className="rounded-[2rem] border-border/50 hover-elevate cursor-pointer group h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
+                <CardHeader className="p-6 pb-0">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="p-3 rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                      <ListChecks className="w-6 h-6" />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-lg">{list.name}</h3>
-                      <p className="text-sm text-muted-foreground">Tap to view items</p>
+                    <Badge variant={list.type === "Wants" ? "secondary" : "default"} className="rounded-lg px-2.5 py-1">
+                      {list.type}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-2xl font-display font-bold group-hover:text-primary transition-colors">{list.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 pt-4">
+                  <div className="space-y-3">
+                    {list.storeName && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 w-fit px-3 py-1.5 rounded-xl font-medium">
+                        <Store className="w-4 h-4" /> {list.storeName}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-sm pt-2">
+                      <span className="text-muted-foreground font-medium">Tap to open list</span>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                 </CardContent>
               </Card>
             </Link>

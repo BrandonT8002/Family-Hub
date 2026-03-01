@@ -68,6 +68,7 @@ export const groceryLists = pgTable("grocery_lists", {
   familyId: integer("family_id").references(() => families.id).notNull(),
   name: text("name").notNull(),
   type: text("type").default("Needs"), // Wants vs Needs
+  storeName: text("store_name"),
 });
 
 export const groceryItems = pgTable("grocery_items", {
@@ -77,6 +78,8 @@ export const groceryItems = pgTable("grocery_items", {
   category: text("category").notNull(),
   price: numeric("price").default("0"),
   isChecked: boolean("is_checked").default(false),
+  notes: text("notes"),
+  assignedTo: text("assigned_to").references(() => users.id),
 });
 
 export const chatMessages = pgTable("chat_messages", {
