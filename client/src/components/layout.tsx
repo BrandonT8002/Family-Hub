@@ -19,11 +19,11 @@ export function Layout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
 
   const getPastelBg = () => {
-    if (location === "/") return "bg-[#f0f7ff]"; // Pastel Blue
-    if (location === "/schedule") return "bg-[#fcf5ff]"; // Pastel Lavender
-    if (location === "/money") return "bg-[#fff5f7]"; // Pastel Rose
-    if (location.startsWith("/groceries")) return "bg-[#fffaf0]"; // Pastel Peach
-    if (location === "/chat") return "bg-[#f0fff4]"; // Pastel Mint
+    if (location === "/") return "bg-[#b3d9ff]"; // Bold Pastel Blue
+    if (location === "/schedule") return "bg-[#e0b3ff]"; // Bold Pastel Lavender
+    if (location === "/money") return "bg-[#ffb3c1]"; // Bold Pastel Rose
+    if (location.startsWith("/groceries")) return "bg-[#ffd9b3]"; // Bold Pastel Peach
+    if (location === "/chat") return "bg-[#b3ffcc]"; // Bold Pastel Mint
     return "bg-background";
   };
 

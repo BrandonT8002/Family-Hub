@@ -161,10 +161,10 @@ export default function Money() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="bg-white/50 p-1 rounded-xl border border-white/20 backdrop-blur-sm">
-          <TabsTrigger value="overview" className="rounded-lg px-6 data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all">Overview</TabsTrigger>
-          <TabsTrigger value="schedule" className="rounded-lg px-6 data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all">Schedule</TabsTrigger>
-          <TabsTrigger value="goals" className="rounded-lg px-6 data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all">Savings Goals</TabsTrigger>
+        <TabsList className="bg-white/40 p-1.5 rounded-2xl border-2 border-white/60 backdrop-blur-md shadow-inner">
+          <TabsTrigger value="overview" className="rounded-xl px-8 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all font-black text-sm tracking-wide">OVERVIEW</TabsTrigger>
+          <TabsTrigger value="schedule" className="rounded-xl px-8 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all font-black text-sm tracking-wide">SCHEDULE</TabsTrigger>
+          <TabsTrigger value="goals" className="rounded-xl px-8 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all font-black text-sm tracking-wide">SAVINGS GOALS</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
