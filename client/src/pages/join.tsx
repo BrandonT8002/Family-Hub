@@ -140,7 +140,7 @@ export default function JoinFamily() {
             {!isAuthenticated ? (
               <div className="space-y-4 text-center">
                 <p className="text-muted-foreground font-medium">Sign in with Replit to continue</p>
-                <Button onClick={login} className="w-full h-12 rounded-2xl font-bold text-base shadow-lg" data-testid="button-login-to-join">
+                <Button onClick={() => login(`/join/${token}`)} className="w-full h-12 rounded-2xl font-bold text-base shadow-lg" data-testid="button-login-to-join">
                   Sign in to join
                 </Button>
               </div>

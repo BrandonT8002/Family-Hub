@@ -37,8 +37,9 @@ export function useAuth() {
     },
   });
 
-  const login = () => {
-    window.location.href = "/api/login";
+  const login = (returnTo?: string) => {
+    const url = returnTo ? `/api/login?returnTo=${encodeURIComponent(returnTo)}` : "/api/login";
+    window.location.href = url;
   };
 
   return {
