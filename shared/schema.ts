@@ -60,6 +60,8 @@ export const events = pgTable("events", {
   startTime: timestamp("start_time"),
   endTime: timestamp("end_time"),
   recurrence: text("recurrence").notNull().default("One-time"),
+  recurrenceDays: text("recurrence_days").array(),
+  recurrenceEnd: timestamp("recurrence_end"),
   isPersonal: boolean("is_personal").notNull().default(false),
   notes: text("notes"),
   location: text("location"),

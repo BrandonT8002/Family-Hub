@@ -20,8 +20,10 @@ export interface IStorage {
   getMemberRole(familyId: number, userId: string): Promise<string | null>;
   removeFamilyMember(id: number, familyId: number): Promise<void>;
 
-  getEvents(familyId: number): Promise<(typeof events.$inferSelect)[]>;
+  getEvents(familyId: number): Promise<any[]>;
   createEvent(event: InsertEvent): Promise<typeof events.$inferSelect>;
+  updateEvent(id: number, familyId: number, userId: string, data: any): Promise<typeof events.$inferSelect>;
+  deleteEvent(id: number, familyId: number, userId: string): Promise<void>;
 
   getExpenses(familyId: number): Promise<(typeof expenses.$inferSelect)[]>;
   createExpense(expense: any): Promise<typeof expenses.$inferSelect>;
@@ -202,12 +204,54 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEvents(familyId: number) {
-    return await db.select().from(events).where(eq(events.familyId, familyId));
+    const rows = await db.select({
+      event: events,
+      creatorDisplayName: familyMembers.displayName,
+      creatorFirstName: users.firstName,
+    })
+      .from(events)
+      .leftJoin(familyMembers, and(
+        eq(familyMembers.userId, events.creatorId),
+        eq(familyMembers.familyId, events.familyId)
+      ))
+      .leftJoin(users, eq(users.id, events.creatorId))
+      .where(eq(events.familyId, familyId));
+    return rows.map(r => ({
+      ...r.event,
+      creatorDisplayName: r.creatorDisplayName || r.creatorFirstName || null,
+    }));
   }
   
   async createEvent(event: any) {
     const [newEvent] = await db.insert(events).values(event).returning();
     return newEvent;
+  }
+
+  async updateEvent(id: number, familyId: number, userId: string, data: any) {
+    const [existing] = await db.select().from(events).where(and(eq(events.id, id), eq(events.familyId, familyId)));
+    if (!existing) throw new Error("Event not found");
+    if (existing.creatorId !== userId) throw new Error("Only the creator can edit this event");
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.date !== undefined) updateData.date = new Date(data.date);
+    if (data.startTime !== undefined) updateData.startTime = data.startTime ? new Date(data.startTime) : null;
+    if (data.endTime !== undefined) updateData.endTime = data.endTime ? new Date(data.endTime) : null;
+    if (data.recurrence !== undefined) updateData.recurrence = data.recurrence;
+    if (data.recurrenceDays !== undefined) updateData.recurrenceDays = data.recurrenceDays || null;
+    if (data.recurrenceEnd !== undefined) updateData.recurrenceEnd = data.recurrenceEnd ? new Date(data.recurrenceEnd) : null;
+    if (data.isPersonal !== undefined) updateData.isPersonal = data.isPersonal;
+    if (data.notes !== undefined) updateData.notes = data.notes;
+    if (data.location !== undefined) updateData.location = data.location;
+    const [updated] = await db.update(events).set(updateData).where(eq(events.id, id)).returning();
+    return updated;
+  }
+
+  async deleteEvent(id: number, familyId: number, userId: string) {
+    const [existing] = await db.select().from(events).where(and(eq(events.id, id), eq(events.familyId, familyId)));
+    if (!existing) throw new Error("Event not found");
+    if (existing.creatorId !== userId) throw new Error("Only the creator can delete this event");
+    await db.delete(events).where(eq(events.id, id));
   }
 
   async getExpenses(familyId: number) {

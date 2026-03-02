@@ -62,7 +62,7 @@ server/
 
 ## Features
 - **Dashboard**: Overview of events, expenses, savings, Leave Time widget (countdown + interactive checklist)
-- **Schedule**: Calendar with recurring events, personal/shared
+- **Schedule**: Calendar with proper recurring events (Daily/Weekly/Monthly/Yearly with day-of-week selection, presets for Weekdays/Every day/Weekends, optional end date), event expansion across calendar, edit/delete events (creator-only), creator attribution on event cards with display name fallback, personal event privacy (only creator sees personal events, shared events visible to all family members)
 - **Money**: Bill-centric management with bill types (housing, utility, subscription, insurance, transportation, education, internet, shopping), recurring/one-time tracking, due date mapping with overdue/due-soon alerts, annual cost projections per bill and by type, paid/unpaid toggle, auto-pay flag, edit/delete bills, expense logging, savings goals; bills appear on Schedule calendar
 - **Groceries/Shopping**: Shopping lists with Wants/Needs categorization, private/shared toggle per list, list categories (Groceries, Household, School Supplies, Home Improvement, Baby & Kids, Pet Supplies, Health & Pharmacy, Electronics, General, Other), category filtering
 - **Wishlists**: Personal and family wishlists with gift surprise support (hideClaimedBy), item claiming by family members, purchased tracking, item categories, estimated prices, store links, priority levels, want/need classification, visibility (family/private), creator-only item management

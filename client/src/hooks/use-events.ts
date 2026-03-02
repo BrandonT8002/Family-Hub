@@ -4,11 +4,11 @@ import { apiRequest } from "@/lib/queryClient";
 
 export function useEvents() {
   return useQuery({
-    queryKey: [api.events.list.path],
+    queryKey: ['/api/events'],
     queryFn: async () => {
-      const res = await fetch(api.events.list.path, { credentials: "include" });
+      const res = await fetch('/api/events', { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch events");
-      return api.events.list.responses[200].parse(await res.json());
+      return res.json();
     },
   });
 }
@@ -22,15 +22,43 @@ export function useCreateEvent() {
       date: string; 
       startTime?: string;
       recurrence?: string;
+      recurrenceDays?: string[];
+      recurrenceEnd?: string;
       isPersonal?: boolean;
       notes?: string;
       location?: string;
     }) => {
-      const res = await apiRequest("POST", api.events.create.path, data);
-      return api.events.create.responses[201].parse(await res.json());
+      const res = await apiRequest("POST", '/api/events', data);
+      return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.events.list.path] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+    },
+  });
+}
+
+export function useUpdateEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...data }: { id: number; [key: string]: any }) => {
+      const res = await apiRequest("PATCH", `/api/events/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+    },
+  });
+}
+
+export function useDeleteEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/events/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
     },
   });
 }

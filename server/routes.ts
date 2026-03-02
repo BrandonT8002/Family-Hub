@@ -206,6 +206,8 @@ export async function registerRoutes(
         familyId: req.family.id,
         creatorId: req.user.claims.sub,
         recurrence: input.recurrence || "One-time",
+        recurrenceDays: input.recurrenceDays || null,
+        recurrenceEnd: input.recurrenceEnd ? new Date(input.recurrenceEnd) : null,
         isPersonal: !!input.isPersonal,
         notes: input.notes || null,
         location: input.location || null,
@@ -216,6 +218,28 @@ export async function registerRoutes(
         return res.status(400).json({ message: err.errors[0].message });
       }
       throw err;
+    }
+  });
+
+  app.patch('/api/events/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      const event = await storage.updateEvent(id, req.family.id, userId, req.body);
+      res.json(event);
+    } catch (err: any) {
+      res.status(400).json({ message: err.message || "Failed to update event" });
+    }
+  });
+
+  app.delete('/api/events/:id', isAuthenticated, requireFamily, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      await storage.deleteEvent(id, req.family.id, userId);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(400).json({ message: err.message || "Failed to delete event" });
     }
   });
 

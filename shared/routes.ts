@@ -69,6 +69,8 @@ export const api = {
         startTime: z.string().optional(),
         endTime: z.string().optional(),
         recurrence: z.string().optional(),
+        recurrenceDays: z.array(z.string()).optional(),
+        recurrenceEnd: z.string().optional(),
         isPersonal: z.boolean().optional(),
         notes: z.string().optional(),
         location: z.string().optional(),

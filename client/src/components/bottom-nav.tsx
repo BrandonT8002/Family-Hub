@@ -147,7 +147,7 @@ export function BottomNav() {
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4"
           >
-            <div className="bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/60 overflow-hidden max-w-lg mx-auto">
+            <div className="bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/60 overflow-hidden max-w-lg mx-auto max-h-[calc(100vh-100px)] overflow-y-auto">
               <div className="flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 rounded-full bg-gray-200" />
               </div>
