@@ -21,6 +21,6 @@ RUN mkdir -p uploads
 
 ENV NODE_ENV=production
 
-EXPOSE 5000
+EXPOSE 8080
 
 CMD ["node", "dist/index.cjs"]
